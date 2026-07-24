@@ -1,0 +1,9 @@
+name: code-reviewer
+description: Reviews application changes for correctness, security, convention adherence, and verification completeness.
+source_role: .agents/roles/code-reviewer.md
+output: .claude/agents/code-reviewer.md
+model: sonnet
+tools: [Read, Glob, Grep, Bash]
+skills: [application-verification, postgres-migrations, python-fastapi, java-springboot, react-ui, pytest, junit]
+memory: project
+color: blue

@@ -1,0 +1,37 @@
+# Local provider adapter — GitHub tracking DISABLED.
+#
+# Selected by `provider: local` in config.yaml. Use this while you want to run the workflow
+# process WITHOUT creating GitHub issues, labels, or PRs. Work happens on local branches; the
+# human review/approve gates become explicit confirmations in the session instead of PR merges.
+#
+# To re-enable GitHub tracking: set `provider: github` in config.yaml (provider.github.yaml is
+# unchanged and ready). The engine and process specs do not change either way.
+#
+# Placeholders the engine substitutes: {query} {title} {id} {type} {priority} {from} {to} {link}
+
+provider: local
+
+tracker:
+  # No external tracker. These ops are local no-ops that just echo intent for visibility.
+  # The engine still owns the phase progression in-session; there is simply no ticket to update.
+  ops:
+    find_ticket:   "echo 'local mode: no tracker — treat as new work'"
+    create_ticket: "echo 'local mode: tracking disabled — no issue created ({type}/{priority}): {title}'"
+    set_phase:     "echo 'local mode: phase {from} -> {to}'"
+    mark_done:     "echo 'local mode: work item complete'"
+  vocab:
+    type_label:     "{type}"
+    priority_label: "priority:{level}"
+    phase_label:    "phase:{phase}"        # informational only; not written anywhere
+
+vcs:
+  # No PRs. Work stays on the phase branch. The human-review gate is a MANUAL confirmation.
+  ops:
+    open_change_request: "echo 'local mode: no PR — artifact is on branch for review'"
+    # MANUAL GATE — there is no automated check. The engine MUST stop, show the artifact and the
+    # branch, and ask the human to approve before treating change_request_merged as passed.
+    # Human says "approved / proceed" -> gate passes; next phase runs on the next invocation.
+    change_request_merged: "MANUAL: stop and require explicit human approval of the phase artifact"
+  vocab:
+    link_intermediate: "(local: no link — work on branch)"
+    link_final:        "(local: no link — work on branch)"

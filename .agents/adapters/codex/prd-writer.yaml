@@ -1,0 +1,8 @@
+name: prd-writer
+source_role: .agents/roles/prd-writer.md
+output: .codex/agents/prd-writer.toml
+model: gpt-5-codex
+reasoning_effort: medium
+tools: [read, search, write, exec]
+skills: [prd]
+fallback: inline

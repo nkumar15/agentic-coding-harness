@@ -1,0 +1,39 @@
+# Tracker + VCS provider adapter — GitHub.
+#
+# The `orchestrate` engine speaks ABSTRACT operations (find_ticket, create_ticket, set_phase,
+# open_change_request, change_request_merged, mark_done). This file maps each one to a concrete
+# command, and maps the engine's abstract vocabulary (ticket type, priority, phase, link) to
+# GitHub's concrete model (labels, PR-closes-issue syntax).
+#
+# This is the ONLY place GitHub commands live. The engine and the process specs never call `gh`.
+#
+# Two concerns, deliberately separated:
+#   tracker — where work items live (GitHub Issues)
+#   vcs     — where code review happens (GitHub Pull Requests)
+# GitHub does both. Future Jira support can add `provider.jira.yaml` with the `tracker` block
+# (Jira CLI / REST + JQL + status transitions + smart commits) and keep this file's `vcs` block
+# when code review stays in GitHub PRs. The active provider is selected by `provider:` in
+# `.agents/process/config.yaml`; the engine and specs are unchanged.
+#
+# Placeholders the engine substitutes: {query} {title} {id} {type} {priority} {from} {to} {link}
+
+provider: github
+
+tracker:
+  ops:
+    find_ticket:   gh issue list --search "{query}"
+    create_ticket: gh issue create --title "{title}" --label "{type}" --label "{priority}" --assignee @me
+    set_phase:     gh issue edit {id} --remove-label "{from}" --add-label "{to}"
+    mark_done:     gh issue edit {id} --add-label "phase:done"
+  vocab:
+    type_label:     "{type}"             # feature | bug | chore | docs
+    priority_label: "priority:{level}"   # critical | high | medium | low
+    phase_label:    "phase:{phase}"      # derived from the spec phase id (prd, architecture, development, ...)
+
+vcs:
+  ops:
+    open_change_request:   gh pr create --title "{title}" --body "{link}"
+    change_request_merged: gh pr list --search "{link}" --state merged
+  vocab:
+    link_intermediate: "Part of #{id}"   # links the PR to the ticket without closing it
+    link_final:        "Closes #{id}"    # closes the ticket automatically when the PR merges

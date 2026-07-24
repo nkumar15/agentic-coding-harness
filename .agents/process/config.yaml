@@ -1,0 +1,7 @@
+# Orchestration config. The engine reads this first.
+#
+# `provider` selects the active tracker/VCS adapter. The engine loads
+# `.agents/process/provider.<provider>.yaml` and uses it for all tracker/VCS operations.
+# `local` is the reusable default because it does not require tracker or pull-request setup.
+
+provider: local

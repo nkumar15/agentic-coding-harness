@@ -1,0 +1,8 @@
+name: full-stack-developer
+source_role: .agents/roles/full-stack-developer.md
+output: .codex/agents/full-stack-developer.toml
+model: gpt-5-codex
+reasoning_effort: high
+tools: [read, search, write, edit, exec]
+skills: [application-implementation, postgres-migrations, python-fastapi, java-springboot, react-ui, pytest, junit]
+fallback: inline

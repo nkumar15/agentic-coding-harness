@@ -1,0 +1,17 @@
+# Chore process.
+
+process: chore
+issue_label: chore
+description: Tech debt, dependency, tooling, or infrastructure work. Single change request.
+
+phases:
+  - id: chore
+    agent: full-stack-developer
+    branch: chore/<issue>-<name>
+    artifact: change and verification evidence
+    link: final
+    entry_gate: none
+    exit_gate:
+      all_of: [checks_green, review_approved, change_request_merged]
+
+done_label: phase:done

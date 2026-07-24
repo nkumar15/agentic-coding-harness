@@ -1,0 +1,29 @@
+# Shared gate definitions. Process specs reference these gates by name.
+#
+# Concrete project commands should be supplied through project conventions and substituted into the
+# placeholder commands below when this package is adopted.
+
+gates:
+  none:
+    description: No precondition; the phase may start immediately.
+
+  change_request_merged:
+    description: The phase's change request is approved and merged by a human. In local mode this is an explicit manual approval.
+    provider_op: change_request_merged
+
+  checks_green:
+    description: Global project verification passes: lint, typecheck, tests, builds, and other required repository checks.
+    agent: verifier
+    on_fail: full-stack-developer
+    checks:
+      - <project-conventions:verification.global_checks>
+
+  feature_verification:
+    description: Feature-specific verification from the PRD and architecture is satisfied.
+    agent: verifier
+    on_fail: full-stack-developer
+
+  review_approved:
+    description: General code review verdict is approve, with no critical or blocking findings.
+    agent: code-reviewer
+    on_fail: full-stack-developer

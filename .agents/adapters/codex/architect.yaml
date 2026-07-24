@@ -1,0 +1,8 @@
+name: architect
+source_role: .agents/roles/architect.md
+output: .codex/agents/architect.toml
+model: gpt-5-codex
+reasoning_effort: high
+tools: [read, search, write, exec]
+skills: [feature-architecture, postgres-migrations, python-fastapi, java-springboot, react-ui, pytest, junit]
+fallback: inline

@@ -1,0 +1,9 @@
+name: verifier
+description: Evaluates general project verification and feature-specific verification gates.
+source_role: .agents/roles/verifier.md
+output: .claude/agents/verifier.md
+model: haiku
+tools: [Read, Bash]
+skills: [application-verification, pytest, junit]
+color: yellow
+maxTurns: 10

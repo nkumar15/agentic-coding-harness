@@ -1,0 +1,17 @@
+# Bug-fix process.
+
+process: bug
+issue_label: bug
+description: Defect. Reproduce -> fix -> test. Single change request.
+
+phases:
+  - id: fix
+    agent: full-stack-developer
+    branch: bugfix/<issue>-<name>
+    artifact: failing or targeted regression test, fix, and verification evidence
+    link: final
+    entry_gate: none
+    exit_gate:
+      all_of: [checks_green, review_approved, change_request_merged]
+
+done_label: phase:done
