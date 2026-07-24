@@ -10,7 +10,7 @@ legacy behavior.
 | --- | --- | --- | --- |
 | Unit tests | Verify DTO mapping, service orchestration, branch behavior, error mapping, DAL client request construction, and rule facade behavior in isolation for the active domain. | `springboot-migrator` | `domain_migration_checks_green` |
 | Contract tests | Verify generated Spring API shape matches the contract declared in project conventions for the active domain. | `api-contract-verifier` reports; migrator fixes | `contract_verified` |
-| Rules parity tests | Feed curated legacy `.decisiontable` fixture rows into the migrated rule implementation and compare outputs for the active domain, including market isolation. | `legacy-parity-verifier` reports; migrator or analyze fixes by cause | `rules_parity_verified` |
+| Rules parity tests | Feed curated legacy decision-table fixture rows into the migrated rule implementation and compare outputs for the active domain, including market isolation. | `legacy-parity-verifier` reports; migrator or analyze fixes by cause | `rules_parity_verified` |
 | Cross-domain regression | Run the full reactor and prove the active domain introduced no new failures beyond approved WIP baseline waivers. | `springboot-migration-verifier` reports; migrator fixes code-caused failures | `cross_domain_regression_green` |
 | Local app health smoke | Start the assembled Spring Boot app through the project-declared local runtime and verify actuator health. | `springboot-migration-verifier` reports; migrator fixes startup/config/packaging failures | `springboot_app_health_checked` |
 | API parity tests | Replay captured legacy API requests against deployed Spring Boot API and diff full responses. | `legacy-parity-verifier` reports; owner depends on cause | `api_parity_verified` |
@@ -21,15 +21,15 @@ legacy behavior.
 | Characterization Evidence | Required Test Obligation |
 | --- | --- |
 | Contract operation and required headers/params | Contract test and controller validation/negative tests |
-| `node.ndf` field, optionality, nested doc/list | DTO serialization/deserialization or service mapping test |
-| Pipeline variable lineage or MAP-node rename | Service mapper/unit test proving source-to-target value |
+| Service signature field, optionality, nested doc/list | DTO serialization/deserialization or service mapping test |
+| Pipeline variable lineage or field-mapping-step rename | Service mapper/unit test proving source-to-target value |
 | Branch or loop | Unit test per branch/loop outcome |
 | Dependency failure mapping | Unit or integration-style test with failed DAL/client response |
 | SOAP/REST downstream contract evidence | Client contract test asserting endpoint config, namespace/localPart or method/path, schemaVersion/action, request/response/fault mapping, and headers/auth |
 | Runtime config / packaging / health-probe change | Local app health smoke plus Helm/deployment evidence |
 | Error-code inventory | Tests for direct domain codes, dependency-propagated codes, shared/common translation mappings, and explicit approved exclusions or gaps |
 | Side effect or atomic write boundary | Service test for order/rollback/partial-failure behavior, plus API parity scenario where available |
-| Legacy `.decisiontable` row | Rules parity fixture/test row |
+| Legacy decision-table row | Rules parity fixture/test row |
 | Market-specific rule behavior | Rules parity by market plus cross-market isolation guard |
 | Legacy API example | API parity recorded-replay fixture |
 
@@ -59,7 +59,7 @@ legacy behavior.
 
 - Fixture files under the project-declared rules fixture path are the parity contract. A common
   pattern is `tests/parity-data/rules/<DecisionTable>/<TenantOrMarket>.json`.
-- Fixtures must be derived from the authoritative legacy `.decisiontable` artifacts named in the
+- Fixtures must be derived from the authoritative legacy decision-table artifacts named in the
   project migration conventions, not repository `rules/` migrated assets or another
   stale/non-authoritative source.
 - Candidate fixture data and the per-market source rule-count matrix should be generated during

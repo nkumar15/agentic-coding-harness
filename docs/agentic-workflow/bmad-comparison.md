@@ -39,7 +39,7 @@ Use this framing:
 > conventions, migration parity evidence, and human approval gates central.
 
 The practical reason for this package is internal reuse. It started as the workflow used to drive a
-webMethods-to-Spring-Boot migration and was generalized into a repeatable pattern for guiding agents
+legacy-to-Spring-Boot migration and was generalized into a repeatable pattern for guiding agents
 through requirements, design, implementation, verification, and review so other teams can adopt it
 for day-to-day feature work, bug fixes, chores, documentation, and further legacy migrations.
 

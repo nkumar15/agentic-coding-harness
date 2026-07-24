@@ -54,13 +54,13 @@ fixes.
 1. Review against the approved design and contract.
 2. Check Spring Boot layering: thin controllers, service orchestration, DAL client transport, DTOs as
    data carriers.
-3. Check `node.ndf` signature decisions, field renames, pipeline-derived mappings, dependency
+3. Check service signature decisions, field renames, pipeline-derived mappings, dependency
    behavior, downstream SOAP/REST contract fidelity, side effects, and complete error handling from
    the design. Confirm direct,
    dependency-propagated, shared/common, intentionally excluded, and unknown-reachability error-code
    classifications are represented in code/tests or documented design gaps.
 4. Check rule usage, market isolation, rule-source priority, and that every wired rule asset has
-   resolved decision-table-to-target conversion-fidelity evidence from legacy `.decisiontable`
+   resolved decision-table-to-target conversion-fidelity evidence from legacy decision-table
    artifacts, not repository `rules/` implementation output. If the asset already existed under
    `rules/`, check that the design verified compile/load or build success, module/package routing,
    model compatibility, fixture/test reconciliation, and market isolation before it was wired.
@@ -83,7 +83,7 @@ fixes.
 Focus findings on:
 
 - contract compliance
-- `node.ndf` signature and DTO/service mapping fidelity
+- service signature and DTO/service mapping fidelity
 - field rename/pipeline mapping correctness
 - coding work-package completion
 - market isolation and migrated rule asset usage

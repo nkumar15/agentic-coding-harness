@@ -42,9 +42,9 @@ source, and your role is to reveal them without inventing behavior.
 
 ## Inputs Expected
 
-- Legacy WebMethods source for the assigned domain.
-- Relevant `flow.xml`, `node.ndf`, legacy `.decisiontable` artifacts, adapter, and connector
-  files.
+- Legacy source for the assigned domain.
+- Relevant flow/orchestration definitions, service signature sources, legacy decision-table
+  artifacts, adapter, and connector files.
 - Functional config/reference-data sources reached by the traced call graph, including source
   config files, deployment-mounted config files, config tables, environment/property files, and
   checked-but-missing placeholders as defined by project conventions.
@@ -58,14 +58,14 @@ source, and your role is to reveal them without inventing behavior.
 
 1. Identify operation boundaries from the target contract and project-convention entry source.
 2. Trace the invoked call graph before deciding the domain boundary. Include packages/services/docs
-   reached by business INVOKEs and explicitly exclude sibling packages or source snapshots only with
-   checked-path evidence.
-3. Trace all three legacy layers: API entry FlowService, orchestration FlowServices, and
+   reached by business service-call steps and explicitly exclude sibling packages or source
+   snapshots only with checked-path evidence.
+3. Trace all three legacy layers: API entry service, orchestration services, and
    rules/adapters/connectors. Do not stop at layer 1.
-4. Inspect relevant `node.ndf` files for every operation, service, and doc type relied on.
-5. Track pipeline variable lineage from first producer through MAP aliases, overwrites/drops,
+4. Inspect relevant service signature sources for every operation, service, and doc type relied on.
+5. Track pipeline variable lineage from first producer through mapping aliases, overwrites/drops,
    branch-specific values, later consumers, and final output or side effect.
-6. Capture every MAP-node field rename and every BRANCH, LOOP, and error/catch path.
+6. Capture every field-mapping-step rename and every branch, loop, and error/catch path.
 7. Map data operations to DAL endpoints and rule invocations to decision tables.
 8. Record dependency behavior for DAL adapters, SOAP/REST connectors, config/reference lookups,
    rule tables, and peer services.
@@ -98,7 +98,7 @@ source, and your role is to reveal them without inventing behavior.
     assumptions and proven legacy behavior, including hardcoded market data, missing branch paths,
     skipped rules, contract shape differences, alternate DAL endpoints, or partial tests. Do not
     treat existing target code as authoritative legacy evidence.
-14. For rule behavior, use only legacy `.decisiontable` artifacts under the legacy decision table
+14. For rule behavior, use only legacy decision-table artifacts under the legacy decision table
     paths declared in project conventions as the source of truth unless a human names an additional
     SME-approved corpus. Ignore repository `rules/` for analysis; it is migrated rule
     implementation output. Stale/non-authoritative rule-extraction artifacts must not be used to
@@ -109,7 +109,7 @@ source, and your role is to reveal them without inventing behavior.
     as a market column. When a rule wrapper targets a same-named decision table in multiple rule
     projects, prove the active project from the wrapper namespace, project-name pipeline value, or
     project-convention routing service before classifying usage.
-15. Generate candidate rule parity fixture data from source `.decisiontable` rows with
+15. Generate candidate rule parity fixture data from source decision-table rows with
     `tools/decision-table-parser/parse_decision_tables.py` for every `domain-required`,
     `shared-required`, and `unknown` table across applicable markets and shared/common rule
     projects. Keep parser output under the project-declared per-table/per-market fixture path
@@ -134,7 +134,7 @@ source, and your role is to reveal them without inventing behavior.
     and market isolation.
 19. Verify rule fixture coverage before analyze approval: every in-scope decision table has a
     committed fixture file for every in-scope market, and fixture rule counts reconcile with legacy
-    `.decisiontable` source rows or documented exclusions.
+    decision-table source rows or documented exclusions.
 20. Ask clarifying questions during analysis when a decision is required to classify scope, pick a
     source of truth, or proceed without risky guessing. If analysis can continue, record the question
     in the artifact with impact/options/recommendation/owner; if the answer is required before
@@ -149,14 +149,15 @@ functional/non-functional summaries, technical legacy analysis, design/code hand
 questions, and analyze gate readiness.
 
 In `Migration Sources Checked`, include only migration evidence such as contracts, legacy
-`flow.xml`, `node.ndf`, legacy `.decisiontable` artifacts, adapter, connector, migrated rule assets
-used for conversion-fidelity comparison, and fixture files. Do not list agent instructions, LLM
-behavior rules, process files, or developer tooling as migration sources.
+flow/orchestration definitions, service signature sources, legacy decision-table artifacts, adapter,
+connector, migrated rule assets used for conversion-fidelity comparison, and fixture files. Do not
+list agent instructions, LLM behavior rules, process files, or developer tooling as migration
+sources.
 
 The report must include:
 
-- domain boundary discovery with contract start point, entry source, followed INVOKEs, included
-  scope, explicit exclusions, and evidence confidence
+- domain boundary discovery with contract start point, entry source, followed service-call steps,
+  included scope, explicit exclusions, and evidence confidence
 - code structure and structural fit
 - dependency map and migration sequencing
 - operation inventory
@@ -217,5 +218,5 @@ not a footnote.
 
 ## Memory Updates
 
-Record recurring legacy patterns, MAP-node tricks, dependency gotchas, fixture/parser issues, and
+Record recurring legacy patterns, field-mapping-step tricks, dependency gotchas, fixture/parser issues, and
 domain-specific risks that will help future characterization work.

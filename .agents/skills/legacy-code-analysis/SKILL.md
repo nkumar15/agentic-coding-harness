@@ -1,6 +1,6 @@
 ---
 name: legacy-code-analysis
-description: Read and understand a legacy source system — FlowServices (flow.xml), decision tables, service signatures (node.ndf), JDBC adapters, and SOAP connectors in a webMethods Integration Server codebase, or the equivalent artifacts in another legacy stack — and produce a characterization artifact for migration. Generic and reusable across legacy-to-target migrations. Use when analyzing what a legacy operation does before migrating it.
+description: Read and understand a legacy source system — orchestration/flow logic, decision tables, service signatures, database adapters, and SOAP/REST connectors — and produce a characterization artifact for migration. Generic and reusable across legacy-to-target migrations. Use when analyzing what a legacy operation does before migrating it.
 license: Proprietary
 metadata:
   author: Neeraj
@@ -14,66 +14,63 @@ This skill is the generic "how". Concrete facts — the legacy source root, the 
 names, the contract to cross-check against, where to write the artifact — are supplied by the
 calling agent; do not assume specific paths here.
 
-The detailed technique below is written against webMethods Integration Server, the layered
-FlowService/decision-table/adapter shape this package was first built for. The same
-principles — trace the full call graph, follow field lineage through every rename, extract rule
-rows as golden fixtures, capture the exact downstream contract, classify every error code — apply
-to other legacy stacks; substitute the equivalent source artifacts for `flow.xml`, `node.ndf`, and
-`.decisiontable` files.
+The technique below is stack-agnostic: trace the full call graph, follow field lineage through
+every rename, extract rule rows as golden fixtures, capture the exact downstream contract, and
+classify every error code. It applies to any layered legacy integration/orchestration stack —
+visual flow tools, BPMN engines, scripted orchestration, or plain service code — using whatever
+concrete source artifacts (flow/orchestration definitions, service signatures, decision tables, or
+equivalents) the project's legacy source declares.
 
 ---
 
-## The layered flow (typical shape)
+## The layered architecture (typical shape)
 
-A webMethods app usually layers each operation as:
+A legacy integration/orchestration app usually layers each operation as:
 
 ```
-API entry      a FlowService (flow.xml) per operation        — INVOKE chains + MAP nodes; the skeleton
+API entry      one service per operation                    — call sequence + field mapping; the skeleton
    ↓
-Orchestration  service FlowServices                          — sequences rule calls + data calls; MOST logic
+Orchestration  orchestration services                        — sequences rule calls + data calls; MOST logic
    ↓
 Rules          a business-rules service → decision tables    — business rule rows
-Data adapters  JDBC adapter services                         — SQL operations
-Connectors     SOAP/REST connector services                 — calls to peer systems
+Data adapters  database adapter services                     — SQL operations
+Connectors     SOAP/REST connector services                  — calls to peer systems
 ```
 
-Read **all layers** — the API-entry flow alone is never enough; most logic lives in orchestration
+Read **all layers** — the API-entry logic alone is never enough; most logic lives in orchestration
 and below. (The project's concrete package names for each layer are in its conventions file.)
 
-## Reading `flow.xml`
+## Reading the orchestration/flow logic
 
-A FlowService is visual logic serialized to XML. Key node types:
+Each legacy operation's logic is defined somewhere — a visual flow, a script, a rule chain, or
+plain code. Regardless of the concrete format, extract:
 
-| Node | Meaning | Migration relevance |
-|------|---------|---------------------|
-| `<INVOKE SERVICE="...">` | Calls another service | The call sequence — order matters |
-| `<MAP>` / `MAPTARGET` / `MAPSOURCE` | Renames/reshapes pipeline fields | **Silent field renames = business logic.** Capture every one. |
-| `<BRANCH>` | Conditional (switch on a field) | Trace BOTH paths — tenant/variant-specific branches hide here |
-| `<SEQUENCE EXIT-ON="FAILURE">` | Try block | Maps to try/catch |
-| `<SEQUENCE EXIT-ON="DONE">` | Catch / cleanup | Error handling + the exact error codes/messages |
-| `<LOOP>` | Iterate over a list | Maps to a Java loop/stream |
+- **Call sequence** — which downstream services/operations are invoked, and in what order. Order
+  matters.
+- **Field renames/reshaping** — any step that renames, maps, or reshapes data between the caller's
+  and callee's field names. **Silent field renames are business logic.** Capture every one.
+- **Conditional/branch logic** — every branch condition and both of its outcomes.
+  Tenant/variant-specific behavior often hides in branches.
+- **Try/catch or error-handling blocks** — what triggers them and the exact error codes/messages
+  they produce.
+- **Loops** — iteration over a list, and what happens to each item.
 
-**Technique for large flow.xml** (they can be hundreds of KB): extract the call spine first, then
-read MAP nodes and branches.
-```bash
-grep -o 'SERVICE="[^"]*"' flow.xml                       # the INVOKE spine
-grep -n '<BRANCH\|<MAP\|MAPTARGET\|<LOOP' flow.xml        # control flow + field transforms
-```
-Ignore infrastructure INVOKEs (request-header fetch, logging start/end, JSON serialization,
-get-last-error) — the target framework handles those. Focus on business INVOKEs and the MAP nodes
-between them.
+**Technique for large flow/orchestration definitions** (these can be large): extract the call
+sequence first as a simple ordered list of what calls what, then read field-mapping steps and
+branches in a second pass. Ignore purely infrastructural steps (header/context setup, logging,
+serialization, generic error lookup) — the target framework typically already provides these.
+Focus on steps that carry business meaning.
 
-## Reading `node.ndf`
+## Reading service signatures
 
-The service signature: `sig_in` (inputs) and `sig_out` (outputs, often a `rec_ref` to a canonical
-doc type). Use it to confirm the operation's parameters and response shape — cross-check against the
-project's API contract.
+Each legacy operation has a signature: its inputs and outputs, often including nested/structured
+document types. Use it to confirm the operation's parameters and response shape — cross-check
+against the project's API contract.
 
-For every migrated operation, capture the signature explicitly. Include the `node.ndf` path, each
-`sig_in` and `sig_out` field, webMethods type, list/document nesting, `rec_ref` target, and any
-required/optional/null/empty semantics you can infer from the signature, validation flow, contract,
-or downstream consumers. If optionality or null handling cannot be proven, record an open question
-instead of guessing.
+For every migrated operation, capture the signature explicitly. Include the signature source path,
+each input and output field, its type, list/document nesting, and any required/optional/null/empty
+semantics you can infer from the signature, validation flow, contract, or downstream consumers. If
+optionality or null handling cannot be proven, record an open question instead of guessing.
 
 ## Reading decision tables
 
@@ -86,7 +83,7 @@ integration-reference scope, stale-source exclusions, fixture generator, and out
 Ignore repository rule-output directories during characterization inventory when the project
 conventions classify them as migrated implementation assets instead of source evidence. Do not use a
 stale/non-authoritative rule export to derive rule counts, fixtures, market coverage, or behavior
-unless a human explicitly approves a named exception. If the authoritative decision-table artifact is
+unless a human explicitly approves a named exception. If the authoritative decision-table source is
 missing, block characterization instead of falling back to stale exports or the migrated rule implementation.
 
 Per-tenant rule sets usually live in sibling folders; some tenants have extra tables others don't —
@@ -101,16 +98,16 @@ When characterizing a decision-table-backed domain, complete the rule corpus gat
 template or handing off to design:
 
 1. Inventory every market/tenant rule project and every shared/common rule project relevant to the
-   domain. Count legacy source `.decisiontable` assets, migrated rule implementation assets, and
+   domain. Count legacy source decision-table assets, migrated rule implementation assets, and
    committed fixtures.
-2. Trace the domain FlowService/business-rule call path to the directly invoked decision tables.
+2. Trace the domain's orchestration/business-rule call path to the directly invoked decision tables.
 3. Inspect outputs from directly invoked tables for shared/transitive dependencies, such as event
    names, rule names, peer interface keys, reward/promotion identifiers, config keys, or error
    mappings that require another decision table to interpret behavior.
 4. Classify every decision table in the checked market/tenant projects and shared/common projects
    as `domain-required`, `shared-required`, `used-by-other-domain`, `not-used-by-this-domain`,
    `unknown`, or `excluded-with-approved-reason`.
-5. Generate candidate rule parity fixture data from the authoritative `.decisiontable` files for
+5. Generate candidate rule parity fixture data from the authoritative decision-table source for
    every `domain-required`, `shared-required`, and `unknown` table across every applicable market.
    Use the project-approved decision-table parser declared in migration conventions when one is
    available. Do not use a parser or export source that project conventions mark stale or
@@ -118,19 +115,19 @@ template or handing off to design:
 6. Generate and include a rule-count matrix with one row per required/shared/unknown market/tenant
    decision table and one column per market/tenant, plus totals. Include a separate shared/common
    rule-count view when shared/common projects are present. Counts must come from source
-   `.decisiontable` rule rows.
+   decision-table rule rows.
 7. Block analyze approval while any `domain-required`, `shared-required`, or `unknown` table
    lacks fixtures, migrated assets, conversion-fidelity evidence, or an explicit human resolution.
 8. If a migrated rule implementation already exists under repository `rules/`, verify it as a
    candidate implementation output rather than trusting it: compile/load or build path,
-   module/package routing, model compatibility, source `.decisiontable` reconciliation, fixture/test
+   module/package routing, model compatibility, source decision-table reconciliation, fixture/test
    reconciliation, and market isolation.
 
 The characterization artifact must show this gate's evidence in the template's rule-corpus
 sections. Do not rely on the template alone to discover missing tables after the analysis is done.
 
 When project conventions define a decision-table fixture generator, use it to generate candidate
-fixtures and a rule-count matrix from authoritative `.decisiontable` artifacts. Generated output must
+fixtures and a rule-count matrix from the authoritative decision-table source. Generated output must
 be written to the fixture path pattern declared by project conventions. Prefer one fixture file per
 decision-table/market pair, with the market/tenant tag still retained inside every row, so reviewers
 can approve one table/market at a time. Generated rows remain candidate evidence until
@@ -147,7 +144,7 @@ Before analyze approval for a decision-table-backed domain, verify and document:
 - every market/tenant relevant to the domain has its own required fixture file for each
   required/shared/unknown decision table;
 - generated candidate fixture files exist for every required/shared/unknown decision table and were
-  produced from `.decisiontable`, not a stale/non-authoritative source;
+  produced from the authoritative decision-table source, not a stale/non-authoritative source;
 - a decision-table rule-count matrix exists in the report showing source row counts per required
   table per market and totals;
 - every legacy decision table in the checked market projects is classified as
@@ -156,7 +153,7 @@ Before analyze approval for a decision-table-backed domain, verify and document:
 - `domain-required`, `shared-required`, and `unknown` tables are treated as blockers until fixtures,
   migrated assets, and design handling are available or the human reviewer explicitly resolves the
   classification;
-- rule counts reconcile to legacy `.decisiontable` source for every required table, or
+- rule counts reconcile to the legacy decision-table source for every required table, or
   exclusions are listed with source path, reason, impact, owner, and human approval status;
 - parser/import defects or manual corrections are documented in the characterization report;
 - the decision-table-to-target conversion fidelity audit is complete for every migrated or generated
@@ -166,13 +163,13 @@ Before analyze approval for a decision-table-backed domain, verify and document:
 
 Do not treat "the current domain invokes seven rule services" as proof that only seven decision
 tables matter. First inventory all tables in the market rule projects, then map the domain's
-FlowService/business-rule call path to the directly required tables, and then inspect those outputs
+orchestration/business-rule call path to the directly required tables, and then inspect those outputs
 for shared/transitive rule dependencies. A table can be outside the current domain only after it has
 an explicit classification and evidence-backed reason. Unknown classification blocks design.
 
 The conversion fidelity audit is mandatory because a converter can generate a syntactically valid
-rule implementation while losing rule behavior. For each table/market, compare legacy
-`.decisiontable` source, generated fixtures, the migrated rule implementation, and generated tests.
+rule implementation while losing rule behavior. For each table/market, compare the legacy
+decision-table source, generated fixtures, the migrated rule implementation, and generated tests.
 Record:
 - source decision-table file, rule implementation file, fixture file, and test file;
 - source row count, fixture row count, migrated rule count, generated test count, and exclusions;
@@ -189,21 +186,22 @@ Record:
 Treat contradictory same-input fixtures, collapsed source conditions, unsupported helper functions,
 and unexplained overwrite behavior as analyze blockers. Do not defer them to coding.
 
-Do not stop at "fixture missing" when the authoritative `.decisiontable` source is available.
+Do not stop at "fixture missing" when the authoritative decision-table source is available.
 Generate candidate fixtures into the project-declared per-table/per-market fixture path and the
 count matrix first, then mark SME validation/correction status as pending or blocked if review is
 still required.
 
 ## Reading adapters & connectors
 
-- Each JDBC adapter service = one SQL operation (SELECT/INSERT/UPDATE/DELETE). Map it to the
+- Each database adapter service = one SQL operation (SELECT/INSERT/UPDATE/DELETE). Map it to the
   equivalent endpoint on the target data layer.
 - Each SOAP/REST connector = one call to a peer system. In the new system this typically becomes a
   call through the target data/integration layer, not a direct call.
-- Inspect the adapter or connector `node.ndf`, not just the calling FlowService. Capture declared
-  inputs, outputs, adapter type, connection/config references, SQL/stored-procedure or connector
-  operation metadata when present, and any retry/timeout settings. If these details are not encoded
-  in source, record the checked path and mark the claim as not found or an open question.
+- Inspect the adapter or connector's signature source, not just the calling flow/orchestration
+  logic. Capture declared inputs, outputs, adapter type, connection/config references,
+  SQL/stored-procedure or connector operation metadata when present, and any retry/timeout
+  settings. If these details are not encoded in source, record the checked path and mark the claim
+  as not found or an open question.
 - For SOAP/REST dependencies, capture the exact wire contract instead of just the dependency name:
   protocol, runtime endpoint or config-key source, endpoint path shape, HTTP method when REST,
   SOAP namespace, root localPart, SOAP action when used, schema version shape and value, request
@@ -226,14 +224,14 @@ still required.
 
 ## Reading functional config and reference data
 
-Legacy webMethods flows often read configuration through shared config services, package-specific
+Legacy flows/services often read configuration through shared config services, package-specific
 wrappers, cache lookups, flat files, deployment-mounted files, database-backed config tables, or
 environment-specific property files. Treat these as migration evidence when the returned value
 affects functional behavior, not merely infrastructure.
 
 When a traced call graph invokes a config/reference lookup:
 
-- Capture the config service or wrapper path, `node.ndf` signature when present, and exact input
+- Capture the config service or wrapper path, its signature when present, and exact input
   fields used to construct the lookup key.
 - Trace the returned value through pipeline lineage: branch conditions, downstream endpoint
   selection, rule inputs, peer/interface/event keys, response fields, error mappings, defaults,
@@ -259,7 +257,7 @@ legacy behavior and must be handed to design.
 
 Error behavior is part of the public contract even when it is implemented through shared utilities,
 translation tables, or propagated dependency faults. Do not report only the codes that are directly
-hardcoded in the API-entry FlowService.
+hardcoded in the API-entry service.
 
 For every characterized domain, build a complete error-code inventory and classify each code:
 
@@ -340,7 +338,7 @@ marking characterization ready for approval.
 
 Use the canonical report template at
 `templates/legacy-code-analysis.md` when producing the characterization artifact. Keep the
-template with this skill because the report shape is part of the WebMethods-analysis capability, not
+template with this skill because the report shape is part of the legacy-analysis capability, not
 a project-specific implementation detail. Project-specific facts still come from the calling agent's
 conventions file.
 
@@ -352,8 +350,8 @@ impact, options, recommendation, and owner.
 Structure the report for multiple review personas without losing evidence:
 - **Business SME / product owner** needs scope, functional behavior, market differences, business
   decisions, user-visible errors, and open approval asks.
-- **webMethods SME** needs FlowService structure, MAP/pipeline lineage, `node.ndf`, adapter,
-  connector, and rule-source evidence.
+- **Legacy-platform SME** needs orchestration/flow structure, field-mapping/pipeline lineage,
+  service signatures, adapter, connector, and rule-source evidence.
 - **Tester / QA** needs fixtures, edge cases, branch outcomes, rule parity coverage, API parity
   scenarios, and failure modes.
 - **Developer** needs contract inputs, DTO/rule/DAL mappings, dependency behavior, target handoff
@@ -366,7 +364,7 @@ Write the artifact as a progressive review document:
 2. Functional behavior and non-functional behavior summaries next, written in business/testable
    terms and tied back to evidence confidence.
 3. Rule behavior and coverage next, because rules often define the observable domain behavior.
-4. Technical legacy analysis next, preserving the detailed webMethods evidence.
+4. Technical legacy analysis next, preserving the detailed legacy-source evidence.
 5. Design/code handoff, open questions, and evidence appendix last.
 
 Use evidence-confidence markers on characterization claims:
@@ -392,28 +390,28 @@ The required detail set is:
 5. **Architecture & context** — code structure, structural fit, dependencies, migration scope, and
    sequencing.
 6. **Domain boundary discovery** — start from the contract operation and the project-convention
-   entry source, then trace every business INVOKE across orchestration, rules, data adapters,
-   connectors, shared utilities, and integration/proxy packages before deciding scope. List included
-   packages/services/docs/rules/data dependencies, explicit exclusions, paths checked, and evidence
-   confidence.
-7. **Operation inventory** — each operation, its flow.xml path, its contract path.
-8. **Service signature & pipeline schema** — `node.ndf` path; `sig_in`/`sig_out` fields, types,
-   required/optional/null/empty semantics, `rec_ref` doc types, nested documents/lists, and fields
-   present in the pipeline but absent from the public contract.
-9. **Per-operation call sequence** — the ordered business INVOKEs across the layers.
+   entry source, then trace every business service-call step across orchestration, rules, data
+   adapters, connectors, shared utilities, and integration/proxy packages before deciding scope.
+   List included packages/services/docs/rules/data dependencies, explicit exclusions, paths checked,
+   and evidence confidence.
+7. **Operation inventory** — each operation, its flow/orchestration source path, its contract path.
+8. **Service signature & pipeline schema** — signature source path; input/output fields, types,
+   required/optional/null/empty semantics, nested document types, and fields present in the
+   pipeline but absent from the public contract.
+9. **Per-operation call sequence** — the ordered business service-call steps across the layers.
 10. **Pipeline variable lineage** — variables set, overwritten, dropped, or renamed; first producer,
-   MAP aliases, later consumers, branch-specific values, and the output or side effect they
+   mapping aliases, later consumers, branch-specific values, and the output or side effect they
    influence.
-11. **Field-mapping table** — every MAP-node rename (legacy field → response field).
+11. **Field-mapping table** — every field-mapping-step rename (legacy field → response field).
 12. **Branch logic** — each conditional, both paths, any tenant/variant specificity.
 13. **Dependency behavior register** — each DAL adapter, SOAP/REST connector, config/reference
    lookup, rule table, or peer service with protocol, source path, target replacement, config key,
    auth/header propagation, timeout/retry behavior if discoverable, failure mapping, readiness, and
    exact downstream contract evidence for any SOAP/REST peer dependency.
-14. **Adapter and connector `node.ndf` inventory** — for every adapter or connector dependency,
-   capture the `node.ndf` path, adapter/connector type, `sig_in`, `sig_out`, config or connection
-   references, SQL/stored-procedure or connector operation metadata if present, checked-but-missing
-   metadata, and evidence confidence.
+14. **Adapter and connector signature inventory** — for every adapter or connector dependency,
+   capture the signature source path, adapter/connector type, input fields, output fields, config or
+   connection references, SQL/stored-procedure or connector operation metadata if present,
+   checked-but-missing metadata, and evidence confidence.
 15. **Functional config and reference data** — every config/reference lookup that affects behavior,
    including key construction, source file/table/env evidence, env/tenant/market/service variance,
    value consumers, defaults/fallbacks, secret-safety handling, target replacement options, and
@@ -431,11 +429,11 @@ The required detail set is:
    from domain branches, catch paths, dependency faults, dynamic propagated error fields, and
    invoked shared/common translation tables; classify each code as direct, propagated,
    shared-translation, unused, or unknown reachability.
-20. **Golden fixtures** — input→output pairs (from legacy `.decisiontable` rows + contract examples) for parity
+20. **Golden fixtures** — input→output pairs (from legacy decision-table rows + contract examples) for parity
    tests, including negative/edge cases for missing required fields, blank-vs-absent values, empty
    results, dependency failures, and partial-write cases where applicable.
-21. **Rule parity fixture coverage** — for decision-table-backed domains, the legacy source
-   `.decisiontable` artifacts reviewed, generated fixture paths under the project-declared
+21. **Rule parity fixture coverage** — for decision-table-backed domains, the legacy decision-table
+   source reviewed, generated fixture paths under the project-declared
    per-table/per-market fixture layout, required decision tables, in-scope markets,
    source-vs-fixture rule counts, SME validation status, corrections, and any blocking fixture gaps.
 22. **Decision-table-to-target conversion fidelity audit** — for every migrated or generated rule
@@ -449,10 +447,11 @@ migration risk.
 
 ## Pitfalls
 
-- **Don't skim flow.xml.** Branches deep in an INVOKE chain may fire only for specific tenants.
-- **Don't ignore MAP nodes.** A missed rename means the wrong field name in the response.
-- **Don't ignore node.ndf.** A missed `sig_in`/`sig_out` field or `rec_ref` can hide optionality,
-  nested document structure, or fields that only appear downstream.
+- **Don't skim the flow/orchestration logic.** Branches deep in a call chain may fire only for
+  specific tenants.
+- **Don't ignore field-mapping steps.** A missed rename means the wrong field name in the response.
+- **Don't ignore the service signature source.** A missed input/output field or nested document
+  reference can hide optionality, nested document structure, or fields that only appear downstream.
 - **Don't lose pipeline lineage.** A field set early and consumed later is business logic even when
   no final response rename is visible.
 - **Don't reduce dependencies to names.** Timeout, retry, auth/header propagation, and fault mapping
@@ -464,8 +463,8 @@ migration risk.
 - **Don't miss functional config.** Config lookups, mounted config files, cached reference data,
   and environment-specific values can control branches, endpoints, market mappings, thresholds,
   and error behavior. Trace them like any other dependency and hand them to design.
-- **Don't skip adapter or connector node.ndf files.** The calling flow shows that a dependency is
-  invoked; the adapter/connector metadata may be the only place that exposes signature, connection,
+- **Don't skip adapter or connector signature sources.** The calling flow shows that a dependency is
+  invoked; the adapter/connector signature source may be the only place that exposes it, connection,
   SQL/stored-procedure, and runtime settings.
 - **Don't flatten side effects.** Write ordering, atomic write boundaries, rollback, and duplicate
   guards are part of the legacy behavior.

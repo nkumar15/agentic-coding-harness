@@ -62,7 +62,7 @@ behavior.
    evaluating tests.
 6. Default order when open: DTOs, DAL client, rules wiring, service, controller, tests.
 7. Match the contract exactly for paths, headers, params, DTO fields, types, and status codes.
-8. Reproduce the design's `node.ndf` signature decisions, field renames, and pipeline-derived
+8. Reproduce the design's service signature decisions, field renames, and pipeline-derived
    mappings in the service layer.
 9. Use audited migrated rule assets from the migrated rules directory and preserve package/model classes where feasible.
    If the design or parity data shows unresolved decision-table-to-target conversion loss,

@@ -39,8 +39,8 @@ decisions; the skill template is the reusable output contract.
   Do not assume existing Spring Boot code, DTOs, tests, DAL clients, or rule assets are correct.
   Classify each existing item as `reuse`, `refactor`, `replace`, `defer`, or `unknown`, and create
   remediation work packages before coding stories that depend on it.
-- Carry `node.ndf`, pipeline lineage, MAP-node renames, branch logic, dependency behavior, side
-  effects, atomic write boundaries, functional config/reference-data findings, and the complete
+- Carry service signatures, pipeline lineage, field-mapping-step renames, branch logic, dependency
+  behavior, side effects, atomic write boundaries, functional config/reference-data findings, and the complete
   characterized error-code inventory into explicit target decisions. Do not reduce error handling
   to directly hardcoded domain codes; preserve direct, dependency-propagated, shared/common
   translation, unused, and unknown-reachability classifications.
@@ -60,7 +60,7 @@ decisions; the skill template is the reusable output contract.
   liveness/readiness probes, ingress/service exposure, and deploy-owner gaps. If there is no impact,
   say so explicitly.
 - Design may wire only rule assets with acceptable decision-table-to-target conversion-fidelity
-  evidence from legacy `.decisiontable` artifacts. Repository `rules/` assets are migrated
+  evidence from legacy decision-table artifacts. Repository `rules/` assets are migrated
   implementation output, not source evidence; if they already exist, design must verify they follow
   the migration process before wiring: compile/load or build success, module/package routing, model
   compatibility, fixture/test reconciliation, and market isolation. Stale/non-authoritative
@@ -80,7 +80,7 @@ where each characterization section is consumed in the architecture artifact:
 - Existing / Partial Target Implementation Baseline -> Existing Implementation Reuse /
   Remediation Plan and related `WP-*` work packages.
 - Functional Scenarios And Edge Cases -> Test And Parity Plan and work-package tests.
-- Pipeline Variable Lineage and MAP-Node Field Renames -> Service Orchestration, DTO mapping, and
+- Pipeline Variable Lineage and Field-Mapping Renames -> Service Orchestration, DTO mapping, and
   code/test traceability.
 - Dependency Behavior Register -> target config, headers/auth, timeout/retry, and failure mapping.
 - Downstream Contract Evidence -> exact client contract, runtime URL/config ownership, request and

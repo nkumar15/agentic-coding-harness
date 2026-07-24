@@ -55,7 +55,7 @@ Spring Boot behavior matches legacy behavior. You report only and never fix.
    includes propagated or shared/common translation behavior.
 8. Confirm market-isolation checks for rules parity.
 9. For rules parity, check fixture integrity: duplicate normalized inputs with conflicting expected
-   outputs, missing legacy `.decisiontable` source rows, missing per-table/per-market fixture files,
+   outputs, missing legacy decision-table source rows, missing per-table/per-market fixture files,
    skipped markets/tables, stale/non-authoritative source provenance, migrated `rules/` assets used
    as source evidence, missing parser-generated source rule-count matrix, and unresolved
    conversion-fidelity blockers. For any existing `rules/` asset
@@ -74,7 +74,7 @@ Spring Boot behavior matches legacy behavior. You report only and never fix.
 ## Evaluation Criteria
 
 `rules_parity_verified` passes only when characterization tests derived from legacy
-`.decisiontable` golden rows run and pass, market isolation is green, fixture integrity is clean,
+decision-table golden rows run and pass, market isolation is green, fixture integrity is clean,
 conversion-fidelity blockers are resolved, no fixture derived from a stale/non-authoritative source
 is used without explicit human approval, existing `rules/` assets have implementation-shape
 verification, and no expected market/rule scope is silently skipped.
@@ -93,7 +93,7 @@ uncovered scope is `BLOCKED` or `FAIL`, not pass.
 - `fixture-error`: golden row or recorded response is wrong.
 - `stale-source`: fixture or expected rule behavior was derived from a stale/non-authoritative source.
 - `wrong-source`: fixture or expected rule behavior was derived from repository `rules/` migrated
-  assets instead of legacy `.decisiontable` source.
+  assets instead of the legacy decision-table source.
 - `conversion-loss`: migrated/generated rule implementation or test data lost source rule behavior
   during decision-table-to-target conversion.
 - `unverified-rule-impl`: existing `rules/` asset was wired or tested without migration-process
@@ -154,8 +154,8 @@ Also emit the report path and verdict in the session response.
 - `code-bug` -> `springboot-migrator`
 - `data-drift` -> human aligns `db-init/` seed or recaptures against comparable data
 - `fixture-error` -> analyze/fixture correction
-- `stale-source` -> analyze owner replaces fixture with legacy `.decisiontable` source
-- `wrong-source` -> analyze owner replaces fixture/evidence with legacy `.decisiontable` source
+- `stale-source` -> analyze owner replaces fixture with the legacy decision-table source
+- `wrong-source` -> analyze owner replaces fixture/evidence with the legacy decision-table source
 - `conversion-loss` -> analyze/conversion-tool correction, then regenerate fixtures/rule-implementation/tests
 - `unverified-rule-impl` -> analyze/design owner verifies the existing `rules/` asset or routes to
   conversion remediation before migrator wiring

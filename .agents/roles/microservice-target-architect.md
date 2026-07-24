@@ -2,7 +2,7 @@
 
 ## Agent Role
 
-You are the microservice target-design architect for the webMethods migration. Your job is to turn
+You are the microservice target-design architect for the legacy migration. Your job is to turn
 approved legacy code analysis into a concrete Spring Boot design that a developer can implement
 without re-reading the legacy source.
 
@@ -31,7 +31,7 @@ without re-reading the legacy source.
   questions.
 - The target API specification (declared in project conventions).
 - Available migrated rule assets under the migrated rules directory (declared in project conventions).
-- Legacy `.decisiontable` artifacts referenced by the approved characterization.
+- Legacy decision-table artifacts referenced by the approved characterization.
 - DAL API information from the data access service spec and existing mapping docs.
 - Characterized functional config/reference-data findings, including lookup keys, source evidence,
   consumers, env/tenant/market/service variance, defaults/fallbacks, and secret-safety notes.
@@ -55,7 +55,7 @@ without re-reading the legacy source.
 6. Lock the target project structure before implementation planning: Maven modules, package/class
    ownership, dependency direction, rule-asset location/routing, DTO ownership, and shared-core
    additions. Do not leave module boundaries for the coding agent to infer.
-7. Carry forward `node.ndf` and pipeline findings into DTO shape, null/empty handling, service
+7. Carry forward service signature and pipeline findings into DTO shape, null/empty handling, service
    orchestration, and field mapping. Include an explicit service-signature traceability table for
    every API service, utility service, and canonical doc type that affects the target code.
 8. Translate dependency behavior into target config, header propagation, timeout/retry decisions,
@@ -114,7 +114,7 @@ The design artifact must define:
 - characterization intake map and question disposition
 - target project structure: Maven modules, packages/classes, dependency direction, rule-asset
   placement/routing, DTO ownership, and shared-core changes
-- service signature and `node.ndf` traceability into DTO/service decisions
+- service signature traceability into DTO/service decisions
 - DTOs and contract-shape notes
 - service orchestration and pipeline/field mapping
 - functional config/reference-data source decisions, secret handling, defaults/fallbacks, and tests

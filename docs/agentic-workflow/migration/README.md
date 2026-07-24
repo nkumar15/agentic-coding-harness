@@ -2,10 +2,10 @@
 
 The migration workflow is for legacy-to-target migrations, one work unit (domain, service, module,
 or endpoint group) at a time. It is deliberately generic on the legacy side — the `legacy-code-analysis`
-skill's detailed technique is written against webMethods Integration Server source, but the same
-principles apply to other legacy stacks. The target side is Spring Boot with an optional rule
-engine. Project-specific paths, contracts, verification commands, and vocabulary live in
-`.agents/rules/migration-conventions.md`.
+skill's technique is stack-agnostic and applies to any layered legacy integration/orchestration
+system (visual flow tools, BPMN engines, scripted orchestration, or plain service code). The target
+side is Spring Boot with an optional rule engine. Project-specific paths, contracts, verification
+commands, and vocabulary live in `.agents/rules/migration-conventions.md`.
 
 Process file: `.agents/process/migration.yaml`
 

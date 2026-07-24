@@ -7,7 +7,7 @@ Fill in every `<FILL_IN: ...>` placeholder with your project's values, then copy
 
 # Migration Conventions & Project Facts
 
-The single home for everything **specific to the `<FILL_IN: project name>` webMethods → Spring Boot
+The single home for everything **specific to the `<FILL_IN: project name>` legacy → Spring Boot
 migration**. The capability skills (`java-springboot`, `legacy-code-analysis`,
 `junit-parity-testing`) are deliberately generic and know nothing about this project — the agents
 bind those generic skills to the facts below. When a skill says "the contract", "the legacy source
@@ -31,11 +31,11 @@ provide the full detail behind each row.
 | Live API base URL env var | `<FILL_IN: e.g. MYAPP_API_BASE_URL>` |
 | Target Helm charts | `<FILL_IN: e.g. API: helm/myapp-api; DAL/support: helm/myapp-dal — or "none">` |
 | Local app health endpoint | `<FILL_IN: e.g. http://127.0.0.1:8080/actuator/health>` |
-| Source decision table paths | Market/tenant: `<FILL_IN: e.g. legacy/wm_myapp_impl/framework/rules/*TenantRules/Decision Tables/*.decisiontable>`; shared/common: `<FILL_IN: e.g. legacy/wm_myapp_impl/framework/rules/CommonRules/Decision Tables/*.decisiontable — or "none">` |
+| Source decision table paths | Market/tenant: `<FILL_IN: e.g. legacy/myapp-legacy/framework/rules/*TenantRules/DecisionTables/*.rules>`; shared/common: `<FILL_IN: e.g. legacy/myapp-legacy/framework/rules/CommonRules/DecisionTables/*.rules — or "none">` |
 | Rule fixture generator | `<FILL_IN: e.g. tools/decision-table-parser/parse_decision_tables.py — or "none">` |
 | Rule fixture path pattern | `<FILL_IN: e.g. tests/parity-data/rules/<DecisionTable>/<Market>.json>` |
 | Disallowed rule parser | `<FILL_IN: e.g. tools/legacy-rule-export-parser/parse_export.py (reason: stale source) — or "none">` |
-| Excluded legacy submodules | `<FILL_IN: e.g. wm_myapp_gateway, wm_myapp_integration — or "none">` |
+| Excluded legacy submodules | `<FILL_IN: e.g. myapp_gateway, myapp_integration — or "none">` |
 | Tenant identity field | `<FILL_IN: e.g. x-tenant-id / tenantId — or "none" if single-tenant>` |
 | Tenant registry | `<FILL_IN: e.g. REGION_A=1, REGION_B=2 — or "none">` |
 
@@ -96,8 +96,8 @@ EXACTLY. The contract wins over legacy behavior when they disagree.
   <FILL_IN: rules module if used, e.g. myapp-rule/>/      # rule implementation — omit if no rules engine
 <FILL_IN: migrated rules root if used, e.g. rules/MYAPP/>/ # migrated rule assets — omit if none
 legacy/                       # READ-ONLY reference — never modify
-  <FILL_IN: legacy source path, e.g. wm_myapp_impl/myapp_framework/>/
-    <FILL_IN: decision table glob, e.g. rules/**/Decision Tables/*.decisiontable>/
+  <FILL_IN: legacy source path, e.g. myapp-legacy/myapp_framework/>/
+    <FILL_IN: decision table glob, e.g. rules/**/DecisionTables/*.rules>/
 <FILL_IN: contract file path, e.g. docs/api/my-api-openapi.json>/        # the contract
 <FILL_IN: DAL spec path if applicable, e.g. docs/api/myapp-dal-openapi.json>/ # omit if no DAL
 <FILL_IN: analysis artifacts dir, e.g. .analysis/myapp/>/  # analysis artifacts (gitignored)
@@ -140,19 +140,19 @@ All legacy submodules are READ-ONLY; their scope:
 
 | Submodule | Role | Scope |
 |-----------|------|-------|
-| `<FILL_IN: business logic submodule>` | business logic — FlowServices + decision tables | **IN SCOPE** → `<FILL_IN: target>` |
+| `<FILL_IN: business logic submodule>` | business logic — orchestration services + decision tables | **IN SCOPE** → `<FILL_IN: target>` |
 | `<FILL_IN: DAL submodule if applicable>` | DAL | `<FILL_IN: DONE / IN SCOPE / OUT OF SCOPE>` |
 | `<FILL_IN: gateway submodule if applicable>` | API Gateway | `<FILL_IN: OUT OF SCOPE / IN SCOPE>` |
 | `<FILL_IN: any other submodule>` | `<FILL_IN: role>` | `<FILL_IN: scope>` |
 
 The generic 3-layer flow maps to these concrete packages:
-- **Layer 1 (API entry):** `<FILL_IN: legacy entry FlowService path pattern>`
+- **Layer 1 (API entry):** `<FILL_IN: legacy entry service path pattern>`
 - **Layer 2 (orchestration):** `<FILL_IN: legacy orchestration package>`
 - **Layer 3a (rules):** `<FILL_IN: legacy rules call path>` → decision tables under `<FILL_IN: legacy decision table root>`
 - **Layer 3b (DB adapters):** `<FILL_IN: legacy DB adapter path>` → now `<FILL_IN: DAL service name>`
 - **Layer 3c (connectors if applicable):** `<FILL_IN: connector path>` → `<FILL_IN: target downstream service>`
 
-Decision tables: `<FILL_IN: glob for decision table files per tenant/market, e.g. Tenant{A,B,C}Rules/Decision Tables/*.decisiontable>`
+Decision tables: `<FILL_IN: glob for decision table files per tenant/market, e.g. Tenant{A,B,C}Rules/DecisionTables/*.rules>`
 under `<FILL_IN: legacy source root>`.
 Shared/common decision tables: `<FILL_IN: glob for non-tenant shared/common decision tables — or "none">`.
 Shared/common projects are not tenants/markets; classify them separately when they are required or
@@ -162,14 +162,14 @@ transitively required by a migration unit.
 ## Rule Governance
 
 - **Rule analysis source priority:** authoritative source for characterization is the legacy
-  `.decisiontable` files under `<FILL_IN: decision table root glob>`. A human may name an additional
+  decision-table source under `<FILL_IN: decision table root glob>`. A human may name an additional
   SME-approved corpus, but the repository migrated rules directory is not such a corpus.
 - **Ignore the repository rules directory during analysis inventory.** Do not use migrated rule assets
   to derive source rule counts, fixture rows, market coverage, or parity expectations.
 - Migrated rule/model assets are implementation evidence only after they reconcile back to the legacy
-  `.decisiontable` source and curated fixtures. They may be wired during migrate only when the
+  decision-table source and curated fixtures. They may be wired during migrate only when the
   approved design marks their conversion fidelity as acceptable.
-- Generate rule parity fixture candidates from legacy `.decisiontable` files with
+- Generate rule parity fixture candidates from the legacy decision-table source with
   `<FILL_IN: path to decision-table parser tool, e.g. tools/decision-table-parser/parse_decision_tables.py>`.
   The parser emits one JSON file per decision-table/market pair under
   `<FILL_IN: fixture output path, e.g. tests/parity-data/rules/<DecisionTable>/<Market>.json>`,
@@ -192,7 +192,7 @@ Decision-table classification (use in characterization reports):
 
 | Classification | Meaning | Required handling |
 | --- | --- | --- |
-| `domain-required` | Directly invoked by the unit's legacy FlowService path. | Must have migrated asset, fixture/parity coverage for every applicable market. |
+| `domain-required` | Directly invoked by the unit's legacy orchestration path. | Must have migrated asset, fixture/parity coverage for every applicable market. |
 | `shared-required` | Not directly called but required to interpret outputs or evaluate behavior. | Treat like `domain-required`. |
 | `used-by-other-domain` | Belongs to another migration unit and not needed here. | Exclude with source evidence and review note. |
 | `not-used-by-this-domain` | Present in the rule project but no source path shows consumption. | Exclude with checked paths and confidence marker. |
@@ -220,7 +220,7 @@ verification contract).**
   Golden rows in
   `<FILL_IN: rules fixture path pattern, e.g. tests/parity-data/rules/<DecisionTable>/<Market>.json>`
   (conditions = inputs, outputs = expected, tenant tag retained in each row). Fixtures derived from
-  legacy `.decisiontable` source only. Runs the domain-scoped command declared in
+  the legacy decision-table source only. Runs the domain-scoped command declared in
   `gates.rules_parity_verified.checks`.
   The parity verifier writes the gate report to `.analysis/<name>/<name>-rules-parity-report.md`.
 
@@ -272,13 +272,13 @@ Artifact paths:
 
 1. **Match the contract exactly** — paths, params, headers, field names, types, status codes.
 2. **`<FILL_IN: data access constraint, e.g. No direct JDBC — all data via myapp-dal-impl.>`**
-3. **Rule source priority** — analyze from legacy `.decisiontable` files; wire only audited
+3. **Rule source priority** — analyze from the legacy decision-table source; wire only audited
    migrated assets or explicitly approved gaps. Never re-author rules by hand.
 4. **No rule fires for the wrong `<FILL_IN: tenant/market>` — zero cross-tenant leakage.** Enforce
    per-rule condition or structurally via per-tenant isolation in the rule implementation. Leakage
    is a critical defect.
-5. **Field renames are business logic.** webMethods MAP nodes silently rename fields; reproduce the
-   exact output field names the contract promises, in the service layer.
+5. **Field renames are business logic.** Legacy flow/mapping steps silently rename fields; reproduce
+   the exact output field names the contract promises, in the service layer.
 6. **Verification before merge, phase by phase.** No migrate-phase change merges until code review
    passes. No unit-test-phase change merges until domain implementation checks pass. No
    integration-test-phase change merges until contract verification, rules parity, cross-domain

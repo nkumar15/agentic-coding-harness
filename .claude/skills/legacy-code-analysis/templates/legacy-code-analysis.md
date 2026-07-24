@@ -1,7 +1,7 @@
 # <Domain Name> Characterization
 
 Status: analyze phase artifact for human review. This document characterizes the legacy
-webMethods implementation only. It does not propose or implement the target design.
+implementation only. It does not propose or implement the target design.
 
 ## Evidence Confidence Legend
 
@@ -22,7 +22,7 @@ questions in Open Questions / Decisions Required.
 | Persona | Primary sections | Must validate | Approval / risk focus |
 | --- | --- | --- | --- |
 | Business SME / product owner | Executive Review; Functional Behavior Review; Error Codes And Messages; Open Questions / Decisions Required | Business outcomes, market differences, user-visible errors, in/out of scope behavior | Whether the characterized behavior matches intended business behavior |
-| webMethods SME | Technical Legacy Analysis sections; Service Signature And Pipeline Schema; Pipeline Variable Lineage; MAP-Node Field Renames; Adapter And Connector `node.ndf` Inventory; Rule Corpus Inventory And Domain Coverage | FlowService call path, pipeline state, signatures, adapter/connector metadata, rule-source interpretation | Whether source evidence was read correctly and no legacy behavior was missed |
+| Legacy-platform SME | Technical Legacy Analysis sections; Service Signature And Pipeline Schema; Pipeline Variable Lineage; Field-Mapping Renames; Adapter And Connector Signature Inventory; Rule Corpus Inventory And Domain Coverage | Orchestration call path, pipeline state, signatures, adapter/connector metadata, rule-source interpretation | Whether source evidence was read correctly and no legacy behavior was missed |
 | Tester / QA | Functional Behavior Review; Rule Behavior Review; Golden Fixtures; Decision-Table-To-Target Conversion Fidelity Audit; Error Codes And Messages | Test scenarios, edge cases, fixture coverage, rule parity risks, negative/failure cases | Whether enough evidence exists to build parity tests |
 | Developer | Architecture And Context; Operation Inventory; Dependency Behavior Register; Data Operations; Design And Code Handoff | DTO/rule/DAL mappings, dependencies, sequencing, implementation blockers | Whether design/coding can proceed without guessing |
 | Architect / NFR reviewer | Non-Functional Behavior Review; Dependency Behavior Register; Side Effects And Atomic Write Boundaries; Data Operations; Design And Code Handoff | atomic writes, retries, timeouts, idempotency, auth/header propagation, data consistency | Whether operational and integration risks are understood |
@@ -62,12 +62,12 @@ approved.
 - [ ] Operations in scope are listed and cross-checked against the contract.
 - [ ] Domain boundary discovery starts from the contract operation and traces the invoked call graph;
       included and excluded packages are recorded with evidence.
-- [ ] API-entry FlowServices, orchestration FlowServices, rules, adapters, and connectors are traced.
-- [ ] Relevant API service, utility service, adapter/connector, and doc-type `node.ndf` files are
+- [ ] API-entry services, orchestration services, rules, adapters, and connectors are traced.
+- [ ] Relevant API service, utility service, adapter/connector, and doc-type signature sources are
       inspected or listed as not found.
-- [ ] Pipeline variable lineage records first producer, MAP aliases, overwrites/drops,
+- [ ] Pipeline variable lineage records first producer, mapping aliases, overwrites/drops,
       branch-specific values, consumers, and observable outputs or side effects.
-- [ ] MAP-node field renames are captured as migration behavior, not treated as formatting.
+- [ ] Field-mapping-step renames are captured as migration behavior, not treated as formatting.
 - [ ] Branch, loop, error/catch, and dependency-failure paths are represented as testable behavior.
 - [ ] Dependency behavior covers target replacement, config/auth/header propagation, timeout/retry
       evidence, and failure mapping.
@@ -78,7 +78,7 @@ approved.
       partial-failure outcomes are explicit or marked not found/open question.
 - [ ] Rule corpus inventory covers every applicable market rule project, plus shared/common rule
       projects when present, and classifies every decision table.
-- [ ] Candidate rule parity fixtures are generated from authoritative `.decisiontable` files for
+- [ ] Candidate rule parity fixtures are generated from the authoritative decision-table source for
       every `domain-required`, `shared-required`, and `unknown` table across applicable markets and
       shared/common rule projects.
 - [ ] A per-market decision-table rule-count matrix is included for required/shared/unknown market
@@ -107,24 +107,24 @@ developer tooling as sources.
   - `<path>`
 - Target data-layer contract or mapping:
   - `<path>`
-- Legacy API-entry FlowServices:
-  - `<flow.xml path>`
-  - `<node.ndf path>`
-- Legacy orchestration FlowServices:
-  - `<flow.xml path>`
-  - `<node.ndf path>`
+- Legacy API-entry services:
+  - `<flow/orchestration definition path>`
+  - `<service signature source path>`
+- Legacy orchestration services:
+  - `<flow/orchestration definition path>`
+  - `<service signature source path>`
 - Legacy utility services:
-  - `<flow.xml path>`
-  - `<node.ndf path>`
+  - `<flow/orchestration definition path>`
+  - `<service signature source path>`
 - Shared services and peer connectors:
   - `<service or connector path>`
 - Adapter and connector metadata:
-  - `<adapter/connector node.ndf path>`
+  - `<adapter/connector signature source path>`
 - Functional config/reference-data sources:
-  - `<config lookup flow/node.ndf path>`
+  - `<config lookup flow/signature source path>`
   - `<source config file/table/env/deployment-mounted file path, with secret values omitted>`
 - Legacy rule assets:
-  - `<source decision-table path from migration conventions>/<table>.decisiontable>`
+  - `<source decision-table path from migration conventions>/<table>>`
 - Migrated rule assets:
   - `<migrated rule asset path from migration conventions>` only as migrated implementation evidence, not source evidence
 - Existing fixtures:
@@ -215,7 +215,7 @@ consistency. If source does not expose a setting, record `not-found` with checke
 
 ## Technical Legacy Analysis
 
-The sections below preserve the detailed source evidence needed by webMethods SMEs, developers,
+The sections below preserve the detailed source evidence needed by legacy-platform SMEs, developers,
 architects, and testers. Do not remove these sections when the executive/functional summaries are
 short.
 
@@ -226,9 +226,9 @@ short.
 Use the project migration conventions for concrete contract paths, legacy source roots, package
 roles, source priorities, and excluded sources. Do not infer scope from a single folder name.
 
-| Operation | Contract path / method | Entry FlowService + `node.ndf` | Invoked call graph followed | Included domain scope | Explicit exclusions | Evidence confidence |
+| Operation | Contract path / method | Entry service + signature source | Invoked call graph followed | Included domain scope | Explicit exclusions | Evidence confidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| `<operation>` | `<method path>` | `<flow.xml and node.ndf>` | `<business INVOKEs across rules/data/connectors/utilities>` | `<packages/services/docs/rules/data deps included>` | `<sibling packages/source snapshots/rule assets excluded with reason>` | `<proven/inferred/not-found/open-question>` |
+| `<operation>` | `<method path>` | `<flow/orchestration definition and signature source>` | `<business service-call steps across rules/data/connectors/utilities>` | `<packages/services/docs/rules/data deps included>` | `<sibling packages/source snapshots/rule assets excluded with reason>` | `<proven/inferred/not-found/open-question>` |
 
 Discovery notes:
 
@@ -245,8 +245,8 @@ Explain how the legacy code for this domain is organized.
 
 | Layer | Package / namespace | Element | Source |
 | --- | --- | --- | --- |
-| API entry | `<namespace>` | `<operation>` | `<flow.xml/node.ndf>` |
-| Orchestration | `<namespace>` | `<service>` | `<flow.xml/node.ndf>` |
+| API entry | `<namespace>` | `<operation>` | `<flow/orchestration definition and signature source>` |
+| Orchestration | `<namespace>` | `<service>` | `<flow/orchestration definition and signature source>` |
 | Rules | `<namespace>` | `<decision table>` | `<decision table / rule implementation>` |
 | Data adapter | `<namespace>` | `<adapter>` | `<adapter path>` |
 | Connector | `<namespace>` | `<connector>` | `<connector path>` |
@@ -302,18 +302,18 @@ Contract vs legacy divergences:
 
 - `<divergence and decision/open question>`
 
-## Service Signature And Pipeline Schema From `node.ndf`
+## Service Signature And Pipeline Schema
 
-For each operation/service, capture signature exactly from `node.ndf`.
+For each operation/service, capture its signature exactly from the legacy service signature source.
 
 ### `<service>`
 
-- `node.ndf`: `<path>`
+- Signature source: `<path>`
 - Evidence confidence: `<proven/inferred/not-found/open-question>`
-- `sig_in`:
-  - `<field>`: `<type/dimension/rec_ref/nullability if known>`
-- `sig_out`:
-  - `<field>`: `<type/dimension/rec_ref/nullability if known>`
+- Input fields:
+  - `<field>`: `<type/dimension/nested-doc-type/nullability if known>`
+- Output fields:
+  - `<field>`: `<type/dimension/nested-doc-type/nullability if known>`
 - Runtime metadata:
   - retry:
   - timeout:
@@ -332,13 +332,13 @@ Track values from first producer to final consumer.
 
 | Pipeline variable | Source | Transform or lineage | Consumers | Evidence confidence |
 | --- | --- | --- | --- | --- |
-| `<variable>` | `<producer>` | `<MAP aliases, overwrites, drops, branch-specific values>` | `<response/rule/DAL/side effect>` | `<proven/inferred/not-found/open-question>` |
+| `<variable>` | `<producer>` | `<mapping aliases, overwrites, drops, branch-specific values>` | `<response/rule/DAL/side effect>` | `<proven/inferred/not-found/open-question>` |
 
-## MAP-Node Field Renames
+## Field-Mapping Renames
 
-In webMethods, a MAP node is the visual-flow step that copies, drops, sets, or reshapes values in
-the runtime pipeline. For migration, a MAP-node field is any source or target field touched by those
-MAP steps. These mappings are business behavior because they define how legacy internal names become
+A field-mapping step is any flow/orchestration step that copies, drops, sets, or reshapes values in
+the runtime pipeline. A field-mapping-step field is any source or target field touched by those
+steps. These mappings are business behavior because they define how legacy internal names become
 public API response names, DAL/query inputs, rule inputs, log fields, and exception fields.
 
 | Legacy source field | Target field | Applies in | Notes | Evidence confidence |
@@ -376,7 +376,7 @@ connector metadata before inferring protocol.
 
 | Dependency | Used by | Protocol | Runtime endpoint / config source | Contract evidence checked | Operation / method | Namespace / localPart / path template | Schema version / action | Request mapping | Response mapping | Fault/error mapping | Test obligation | Evidence confidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<dependency>` | `<operation/service>` | `<SOAP/REST/other>` | `<env/config/service URL>` | `<WSDL/XSD/source annotation/node.ndf/path checked>` | `<SOAP op or HTTP method>` | `<namespace+localPart or REST path>` | `<schemaVersion/SOAPAction/n-a>` | `<legacy fields -> request>` | `<response -> pipeline/DTO>` | `<fault/status -> error>` | `<unit/API parity/contract test>` | `<proven/inferred/not-found/open-question>` |
+| `<dependency>` | `<operation/service>` | `<SOAP/REST/other>` | `<env/config/service URL>` | `<WSDL/XSD/source annotation/signature source/path checked>` | `<SOAP op or HTTP method>` | `<namespace+localPart or REST path>` | `<schemaVersion/SOAPAction/n-a>` | `<legacy fields -> request>` | `<response -> pipeline/DTO>` | `<fault/status -> error>` | `<unit/API parity/contract test>` | `<proven/inferred/not-found/open-question>` |
 
 ## Functional Config And Reference Data
 
@@ -387,7 +387,7 @@ personal/health data into this artifact.
 
 | Lookup / key | Used by | Key construction evidence | Value source evidence | Value consumers / behavior impact | Env / tenant / market / service variance | Default / fallback / missing behavior | Target migration action | Evidence confidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<service + key>` | `<operation/service>` | `<flow/node.ndf/MAP evidence>` | `<file/table/env/deployment-mounted file or not-found>` | `<branch/endpoint/rule/error/response effect>` | `<variance or none>` | `<fallback/gap>` | `<env property/secret/app config/DAL/static approved/gap>` | `<proven/inferred/not-found/open-question>` |
+| `<service + key>` | `<operation/service>` | `<flow/signature/mapping evidence>` | `<file/table/env/deployment-mounted file or not-found>` | `<branch/endpoint/rule/error/response effect>` | `<variance or none>` | `<fallback/gap>` | `<env property/secret/app config/DAL/static approved/gap>` | `<proven/inferred/not-found/open-question>` |
 
 Config evidence gaps:
 
@@ -396,21 +396,21 @@ Config evidence gaps:
 - Secrets or sensitive values intentionally omitted:
 - Human decisions needed:
 
-## Adapter And Connector `node.ndf` Inventory
+## Adapter And Connector Signature Inventory
 
-For every JDBC adapter, SOAP connector, REST connector, or shared peer-service dependency, inspect
-its own `node.ndf` in addition to the FlowService that invokes it. This section is mandatory even
-when the dependency is read-only or later mapped through the DAL.
+For every database adapter, SOAP connector, REST connector, or shared peer-service dependency,
+inspect its own signature source in addition to the flow/orchestration logic that invokes it. This
+section is mandatory even when the dependency is read-only or later mapped through the DAL.
 
-| Dependency | node.ndf path | Type | sig_in | sig_out | Connection/config reference | Operation metadata | Checked but not found | Evidence confidence |
+| Dependency | Signature source path | Type | Input fields | Output fields | Connection/config reference | Operation metadata | Checked but not found | Evidence confidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<adapter/connector/service>` | `<path>` | `<JDBC/SOAP/REST/shared-service>` | `<fields/types/rec_refs>` | `<fields/types/rec_refs>` | `<connection alias/env/config key>` | `<SQL/stored proc/connector op/method if encoded>` | `<missing metadata searched for>` | `<proven/inferred/not-found/open-question>` |
+| `<adapter/connector/service>` | `<path>` | `<JDBC/SOAP/REST/shared-service>` | `<fields/types/nested-doc-types>` | `<fields/types/nested-doc-types>` | `<connection alias/env/config key>` | `<SQL/stored proc/connector op/method if encoded>` | `<missing metadata searched for>` | `<proven/inferred/not-found/open-question>` |
 
-For JDBC adapters, record whether the adapter is `SELECT`, `INSERT`, `UPDATE`, `DELETE`, stored
+For database adapters, record whether the adapter is `SELECT`, `INSERT`, `UPDATE`, `DELETE`, stored
 procedure, or unknown. For SOAP/REST connectors, record the connector operation, endpoint/config
 source, propagated headers/auth, and timeout/retry/fault settings when source exposes them. If the
-`node.ndf` lacks these details, list the exact file checked and raise an open question if the gap
-can change observable behavior.
+signature source lacks these details, list the exact file checked and raise an open question if the
+gap can change observable behavior.
 
 ## Side Effects And Atomic Write Boundaries
 
@@ -427,7 +427,7 @@ If a category does not apply, state why.
 
 ## Data Operations
 
-| Data operation | Legacy source | Adapter node.ndf | Inputs | Output | Target mapping status | Evidence confidence |
+| Data operation | Legacy source | Adapter signature source | Inputs | Output | Target mapping status | Evidence confidence |
 | --- | --- | --- | --- | --- | --- | --- |
 | `<operation>` | `<adapter/SQL/service>` | `<path>` | `<inputs>` | `<outputs>` | `<target endpoint or gap>` | `<proven/inferred/not-found/open-question>` |
 
@@ -442,7 +442,7 @@ not markets; keep them out of the per-market matrix and report them separately.
 
 ### Market Rule Project Inventory
 
-| Market | Legacy decision-table project | Source `.decisiontable` count checked | Migrated rule impl count checked | Fixture count checked | Stale/non-authoritative source ignored? | Notes | Evidence confidence |
+| Market | Legacy decision-table project | Source decision-table count checked | Migrated rule impl count checked | Fixture count checked | Stale/non-authoritative source ignored? | Notes | Evidence confidence |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
 | `<market>` | `<path>` | `<count>` | `<count>` | `<count>` | `<yes/no/exception id>` | `<missing/extra assets>` | `<proven/inferred/not-found/open-question>` |
 
@@ -487,7 +487,7 @@ If a table is required but an asset or fixture is missing, record it as a blocke
 reviewer explicitly approves a documented gap.
 
 Include this source row-count matrix before coverage verdicts. Counts must come from legacy
-`.decisiontable` rule rows, not another stale/non-authoritative source, the migrated rule
+decision-table rule rows, not another stale/non-authoritative source, the migrated rule
 implementation, or repository `rules/`.
 
 Market decision-table matrix:
@@ -502,7 +502,7 @@ Shared/common decision-table matrix:
 | --- | --- | ---: | ---: | --- | --- |
 | `<table>` | `<project>` | `<count>` | `<count>` | `<path or gap>` | `<covered/partial/blocker>` |
 
-| Market | Required DT count | Required rule impl count | Required source `.decisiontable` count | Required fixture count | Missing required tables/assets | Coverage verdict |
+| Market | Required DT count | Required rule impl count | Required source decision-table count | Required fixture count | Missing required tables/assets | Coverage verdict |
 | --- | ---: | ---: | ---: | ---: | --- | --- |
 | `<market>` | `<count>` | `<count>` | `<count>` | `<fixture file count and row count>` | `<table/asset gaps>` | `<covered/partial/blocker>` |
 
@@ -577,7 +577,7 @@ SME-validated fixtures:
 
 - `<path or none yet>`
 
-Candidate fixtures generated from source `.decisiontable`:
+Candidate fixtures generated from the source decision-table:
 
 | Decision table | Required markets | Candidate fixture path pattern | Source parser / command | Generation status | SME validation status |
 | --- | --- | --- | --- | --- | --- |
@@ -592,7 +592,7 @@ Rule parity fixture coverage for decision-table-backed behavior:
 Source decision-table evidence reviewed:
 
 - Source artifacts:
-  - `<source decision-table path from migration conventions>/<table>.decisiontable>`
+  - `<source decision-table path from migration conventions>/<table>>`
 - Validation corrections:
   - `<correction or none>`
 - Stale/non-authoritative source handling:
@@ -634,9 +634,9 @@ phase uses the approved design to implement code and tests.
 | Characterization input | Design must decide / specify | Code must later implement |
 | --- | --- | --- |
 | Operation inventory and contract inputs | Controller methods, exact paths, params, headers, DTOs, status/body rules | Contract-conformant endpoints |
-| Service signatures and pipeline schema | Internal command/service model replacing WebMethods pipeline docs | Request normalization and context model |
+| Service signatures and pipeline schema | Internal command/service model replacing legacy pipeline docs | Request normalization and context model |
 | Pipeline variable lineage | Ordered orchestration and carried values | Service sequence preserving producer/consumer order |
-| MAP-node field renames | DTO/rule/DAL/exception mapping table | Explicit mapper/service assignments |
+| Field-mapping-step renames | DTO/rule/DAL/exception mapping table | Explicit mapper/service assignments |
 | Branch logic | Branch matrix and expected outcomes | Conditionals and branch tests |
 | Dependency behavior register | Target replacement and failure mapping for each dependency | DAL/downstream/rule clients |
 | Functional config and reference data | Target source for behavior-affecting config, secret handling, env/tenant/market variance, defaults/fallbacks, and failure behavior | Spring configuration properties, secret references, DAL/reference-data calls, or approved static values plus tests |

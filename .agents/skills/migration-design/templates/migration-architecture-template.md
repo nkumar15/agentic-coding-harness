@@ -27,9 +27,9 @@ drop characterization findings because they are inconvenient or already partiall
 | Existing / Partial Target Implementation Baseline | `<current target code findings>` | Existing Implementation Reuse / Remediation Plan | `<reuse/refactor/replace/defer/unknown + WP>` | `<status>` |
 | Functional Scenarios And Edge Cases | `<scenario list>` | Test And Parity Plan / Scenario To Test Traceability | `<test obligation/gap>` | `<status>` |
 | Market Behavior Matrix | `<market differences>` | Rules Design / Dependency Behavior / Test Plan | `<decision/test/gap>` | `<status>` |
-| Service Signature And `node.ndf` | `<sig_in/sig_out/doc refs>` | Service Signature And `node.ndf` Traceability | `<DTO/service decision>` | `<status>` |
+| Service Signature And Pipeline Schema | `<input/output fields/doc refs>` | Service Signature Traceability | `<DTO/service decision>` | `<status>` |
 | Pipeline Variable Lineage | `<producer/consumer/order>` | Service Orchestration And Pipeline Mapping | `<service design/test>` | `<status>` |
-| MAP-Node Field Renames | `<field mappings>` | DTO And Contract Shape / Traceability | `<mapping/test>` | `<status>` |
+| Field-Mapping Renames | `<field mappings>` | DTO And Contract Shape / Traceability | `<mapping/test>` | `<status>` |
 | Branch Logic | `<branches/errors>` | Service Orchestration / Error Handling / Test Plan | `<decision/test>` | `<status>` |
 | Dependency Behavior Register | `<headers/config/timeouts/retries/failures>` | Dependency Behavior | `<decision/gap>` | `<status>` |
 | Downstream Contract Evidence | `<SOAP/REST namespace/localPart/path/schema/request/response/fault>` | Downstream Contract Design / Test Plan | `<decision/test/gap>` | `<status>` |
@@ -197,8 +197,8 @@ Component notes:
 - [ ] Target project structure is locked before coding starts.
 - [ ] Contract endpoints, headers, params, DTO fields, response codes, and null/empty behavior are
       mapped exactly.
-- [ ] `node.ndf` service signatures and canonical doc types are traced into DTO/service decisions.
-- [ ] Pipeline lineage, MAP-node field mappings, branches, loops, and error paths are carried into
+- [ ] Service signatures and canonical doc types are traced into DTO/service decisions.
+- [ ] Pipeline lineage, field-mapping-step mappings, branches, loops, and error paths are carried into
       service orchestration.
 - [ ] The complete characterized error-code inventory is consumed, including direct domain codes,
       dependency-propagated codes, shared/common translation-table codes, relevant unused codes, and
@@ -276,9 +276,9 @@ Baseline implementation rules:
 | --- | --- | --- | --- | --- | --- | --- |
 | `<operation>` | `<method>` | `<path>` | `<class.method>` | `<headers/params/body>` | `<dto>` | `<notes>` |
 
-## Service Signature And `node.ndf` Traceability
+## Service Signature Traceability
 
-| Operation / Doc Type | `node.ndf` Path | `sig_in` Fields | `sig_out` Fields / `rec_ref` | Required / Optional / Null Semantics | Target DTO / Method Impact | Gap / Decision |
+| Operation / Doc Type | Signature Source Path | Input Fields | Output Fields / Nested Doc Types | Required / Optional / Null Semantics | Target DTO / Method Impact | Gap / Decision |
 | --- | --- | --- | --- | --- | --- | --- |
 | `<operation/doc>` | `<path>` | `<fields>` | `<fields>` | `<semantics>` | `<impact>` | `<gap/decision>` |
 
@@ -286,7 +286,7 @@ Baseline implementation rules:
 
 | DTO | Field | Type | Required | Source | Mapping / Default | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `<dto>` | `<field>` | `<type>` | `<yes/no>` | `<contract/node.ndf/pipeline>` | `<mapping>` | `<notes>` |
+| `<dto>` | `<field>` | `<type>` | `<yes/no>` | `<contract/signature/pipeline>` | `<mapping>` | `<notes>` |
 
 ## Characterization To Design To Code/Test Traceability
 
@@ -319,7 +319,7 @@ resolved or explicitly accepted.
 
 | Dependency | Target Client | Protocol | Endpoint Config | Contract Evidence | Operation / Method | Namespace / localPart / Path | Schema Version / Action | Request Mapping | Response Mapping | Fault/Error Mapping | Tests | Decision / Gap |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<dependency>` | `<class>` | `<SOAP/REST/other>` | `<property/env/secret>` | `<WSDL/XSD/source annotation/node.ndf>` | `<SOAP op or HTTP method>` | `<namespace+localPart or REST path>` | `<schemaVersion/SOAPAction/n-a>` | `<DTO/pipeline -> request>` | `<response -> DTO/pipeline>` | `<fault/status -> error>` | `<unit/client contract/API parity>` | `<D-* or G-*>` |
+| `<dependency>` | `<class>` | `<SOAP/REST/other>` | `<property/env/secret>` | `<WSDL/XSD/source annotation/signature source>` | `<SOAP op or HTTP method>` | `<namespace+localPart or REST path>` | `<schemaVersion/SOAPAction/n-a>` | `<DTO/pipeline -> request>` | `<response -> DTO/pipeline>` | `<fault/status -> error>` | `<unit/client contract/API parity>` | `<D-* or G-*>` |
 
 ## Functional Config And Reference Data Design
 
@@ -370,11 +370,11 @@ Runtime notes:
 
 | Rule Table | Market | Source Decision Table | Rule Asset | Model Class | Result Class | Inputs | Outputs | Gap / Decision |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `<table>` | `<market>` | `<legacy .decisiontable path>` | `<path>` | `<class>` | `<class>` | `<inputs>` | `<outputs>` | `<gap/decision>` |
+| `<table>` | `<market>` | `<legacy decision-table path>` | `<path>` | `<class>` | `<class>` | `<inputs>` | `<outputs>` | `<gap/decision>` |
 
 ## Decision-Table-To-Target Conversion Fidelity
 
-Design may wire only audited rule assets reconciled to legacy `.decisiontable` source. Existing
+Design may wire only audited rule assets reconciled to the legacy decision-table source. Existing
 rule assets under repository `rules/` are candidate migrated implementation and must also pass
 implementation-shape verification: compile/load or build success, module/package routing, model
 compatibility, fixture/test reconciliation, and market isolation. Stale/non-authoritative
@@ -387,7 +387,7 @@ work packages before any story that wires an affected rule.
 
 ## Rule Asset Gap And Remediation Plan
 
-Use this section whenever characterization found source `.decisiontable` files and fixtures but no
+Use this section whenever characterization found source decision-table files and fixtures but no
 acceptable target rule asset. Rule-dependent functional stories must depend on these
 remediation work packages rather than silently bypassing rule parity.
 
@@ -433,7 +433,7 @@ Each `WP-*` is done only when:
 
 - [ ] Approved target files/classes are implemented or the design is updated.
 - [ ] Contract shape remains exact.
-- [ ] Legacy `node.ndf`, pipeline, branch, dependency, side-effect, and error decisions in scope are
+- [ ] Legacy signature, pipeline, branch, dependency, side-effect, and error decisions in scope are
       represented in code.
 - [ ] SOAP/REST downstream clients preserve approved namespace/localPart or method/path,
       schemaVersion/action, request/response fields, fault mapping, endpoint config, and tests.
@@ -499,10 +499,10 @@ paths, edge cases, negative cases, dependency failures, side effects, and market
 - [ ] Existing implementation has explicit reuse/refactor/replace/defer decisions and remediation
       work packages.
 - [ ] No existing implementation item is implicitly trusted without gap review.
-- [ ] `node.ndf` service signatures and canonical doc types are traced into DTO/service decisions.
+- [ ] Service signatures and canonical doc types are traced into DTO/service decisions.
 - [ ] Contract endpoints and DTO shape match the target API specification declared in migration
       conventions.
-- [ ] Pipeline lineage and MAP-node field mappings are carried into the service design.
+- [ ] Pipeline lineage and field-mapping-step mappings are carried into the service design.
 - [ ] Dependency behavior covers config, headers/auth, timeout/retry, and failure mapping.
 - [ ] Downstream SOAP/REST contract details are proven from WSDL/XSD/source evidence and mapped to
       implementation and tests.

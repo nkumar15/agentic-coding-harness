@@ -1,5 +1,5 @@
 name = "springboot-migrator"
-description = "Implements a webMethods domain migration end to end from the approved target-design document."
+description = "Implements a legacy domain migration end to end from the approved target-design document."
 model = "gpt-5-codex"
 model_reasoning_effort = "high"
 

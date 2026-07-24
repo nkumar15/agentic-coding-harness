@@ -1,5 +1,5 @@
 name: microservice-target-architect
-description: Produces the microservice target-design document for a webMethods migration after analyze is approved.
+description: Produces the microservice target-design document for a legacy migration after analyze is approved.
 source_role: .agents/roles/microservice-target-architect.md
 output: .claude/agents/microservice-target-architect.md
 model: opus
