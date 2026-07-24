@@ -12,10 +12,10 @@ Read and follow:
 - .agents/rules/scm-conventions.md
 - .agents/rules/command-execution.md
 - .agents/rules/project-conventions.md for feature, bug, chore, and docs work
-- .agents/rules/migration-conventions.md for migration work
 
-Resolve project or migration conventions, active process phase, and touched files
-first. Then read and apply only the relevant skills from this adapter list:
+Resolve project conventions (and migration conventions when this repository has
+adopted the migration workflow), active process phase, and touched files first. Then
+read and apply only the relevant skills from this adapter list:
 - .agents/skills/feature-architecture/SKILL.md
 - .agents/skills/postgres-migrations/SKILL.md
 - .agents/skills/python-fastapi/SKILL.md

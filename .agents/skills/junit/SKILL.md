@@ -23,8 +23,8 @@ test tags, and exact commands.
 - Add Spring MVC or WebFlux slice tests for controller request/response behavior.
 - Add integration tests only when wiring, persistence, messaging, atomic writes, or framework
   configuration is part of the change.
-- For migrations or legacy parity, use `junit-parity-testing` instead of this generic feature
-  testing skill.
+- For migrations or legacy parity, use the `junit-parity-testing` skill from the `migration-workflow`
+  add-on instead of this generic feature testing skill.
 
 ## JUnit 5 Practices
 

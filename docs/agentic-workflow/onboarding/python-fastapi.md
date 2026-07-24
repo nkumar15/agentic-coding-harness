@@ -259,4 +259,3 @@ Use the workflow-specific docs for detailed operating instructions:
 - [Bug workflow](../bug/README.md)
 - [Chore workflow](../chore/README.md)
 - [Docs workflow](../docs/README.md)
-- [Migration workflow](../migration/README.md)

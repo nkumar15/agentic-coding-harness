@@ -20,7 +20,6 @@ Supported process specs:
 - `bug`: reproduce -> fix -> test.
 - `chore`: describe -> implement.
 - `docs`: write -> review.
-- `migration`: analyze -> design -> migrate -> unit test -> integration test -> deploy and manual test.
 
 When a process names a role, use the matching `.codex/agents/<role>.toml` wrapper if it is
 available in the current Codex session. If the wrapper is unavailable, run the role inline from

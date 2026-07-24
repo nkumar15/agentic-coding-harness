@@ -59,7 +59,6 @@ Humans edit `.agents/`; generated host output is committed for fresh-clone behav
 | `bug` | reproduce -> fix -> test | `full-stack-developer` |
 | `chore` | describe -> implement | `full-stack-developer` |
 | `docs` | write -> review | inline or docs author |
-| `migration` | analyze -> design -> migrate -> unit test -> integration test -> deploy and manual test | `legacy-code-analyzer`, `microservice-target-architect`, `springboot-migrator` |
 
 Reviewer and verifier roles are modeled as gates so they can enforce quality without becoming new
 artifact-producing phases.
@@ -71,7 +70,6 @@ workflow-specific README files:
 - [Bug workflow](bug/README.md)
 - [Chore workflow](chore/README.md)
 - [Docs workflow](docs/README.md)
-- [Migration workflow](migration/README.md)
 
 ## Generator Contract
 
@@ -104,11 +102,10 @@ The validator fails when canonical source and generated output drift. It also ch
 
 1. Copy this package into a target repo.
 2. Fill `.agents/rules/project-conventions.md`.
-3. Fill `.agents/rules/migration-conventions.md` if a migration is in scope.
-4. Replace placeholder gate commands in `.agents/process/gates.yaml` with convention-backed
+3. Replace placeholder gate commands in `.agents/process/gates.yaml` with convention-backed
    commands.
-5. Regenerate adapters and validate.
-6. Restart Claude Code or Codex if needed so new wrappers are discovered.
+4. Regenerate adapters and validate.
+5. Restart Claude Code or Codex if needed so new wrappers are discovered.
 
 ## Common Mistakes
 

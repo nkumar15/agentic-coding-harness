@@ -14,7 +14,6 @@ specific process.
 | Bug | `.agents/process/bug.yaml` | [Bug workflow](bug/README.md) |
 | Chore | `.agents/process/chore.yaml` | [Chore workflow](chore/README.md) |
 | Docs | `.agents/process/docs.yaml` | [Docs workflow](docs/README.md) |
-| Migration | `.agents/process/migration.yaml` | [Migration workflow](migration/README.md) |
 
 Each workflow guide documents the full supported use case: diagram, roles, models, skills, phase
 details, gates, failure routing, required convention detail, design rationale, and done criteria.
@@ -76,18 +75,6 @@ checks_green:
 The important rule is that `gates.yaml` should contain runnable commands, while the convention files
 explain where those commands came from, when to use them, and what evidence they produce.
 
-Migration gates follow the same pattern, backed by `.agents/rules/migration-conventions.md` instead
-of `project-conventions.md`:
-
-```yaml
-domain_migration_checks_green:
-  description: Migration work-unit implementation checks pass using project-defined domain/module scope.
-  agent: springboot-migration-verifier
-  on_fail: springboot-migrator
-  checks:
-    - <migration-conventions:verification.domain_checks>
-```
-
 ## Shared Design Principles
 
 - Processes own phase order, branch shape, artifacts, and gates.
@@ -108,7 +95,6 @@ Agents should not need to guess:
 - framework versions and stack-skill selection
 - deployment targets and health URLs
 - API contracts and compatibility rules
-- migration work-unit naming and legacy source paths
 
 If a workflow repeatedly pauses for the same missing fact, add that fact to the relevant convention
 file rather than adding it to a one-off prompt.

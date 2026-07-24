@@ -1,0 +1,64 @@
+# Gate definitions for the migration process. This supplements the host repository's shared
+# `.agents/process/gates.yaml` (which defines `none` and `change_request_merged`) with the
+# migration-specific gates referenced by `migration.yaml`.
+#
+# Concrete project commands should be supplied through migration conventions and substituted into
+# the placeholder commands below when this package is adopted.
+
+gates:
+  domain_migration_checks_green:
+    description: Migration work-unit implementation checks pass using project-defined domain/module scope.
+    agent: springboot-migration-verifier
+    on_fail: springboot-migrator
+    checks:
+      - <migration-conventions:verification.domain_checks>
+
+  contract_verified:
+    description: Implemented API or interface shape matches the target contract declared in migration conventions.
+    agent: api-contract-verifier
+    on_fail: springboot-migrator
+    checks:
+      - <migration-conventions:verification.contract_checks>
+
+  rules_parity_verified:
+    description: Offline rules parity proves migrated rules match authoritative legacy fixtures for the active work unit.
+    agent: legacy-parity-verifier
+    on_fail: springboot-migrator
+    checks:
+      - <migration-conventions:verification.rules_parity_checks>
+
+  cross_domain_regression_green:
+    description: Baseline-aware full regression proves the active migration did not introduce new breakage.
+    agent: springboot-migration-verifier
+    on_fail: springboot-migrator
+    checks:
+      - <migration-conventions:verification.cross_domain_regression_checks>
+
+  springboot_app_health_checked:
+    description: Local runtime smoke check proves the assembled app starts and answers its project-defined health endpoint.
+    agent: springboot-migration-verifier
+    on_fail: springboot-migrator
+    checks:
+      - <migration-conventions:verification.local_health_checks>
+
+  migration_review_approved:
+    description: Migration code review verdict is approve, with no critical or blocking findings.
+    agent: springboot-migration-reviewer
+    on_fail: springboot-migrator
+
+  deployed_to_environment:
+    description: The migration branch is deployed to the project-defined remote environment and ready for remote parity.
+    manual: true
+
+  api_parity_verified:
+    description: Remote API parity proves deployed target behavior matches captured legacy behavior for the active work unit.
+    agent: legacy-parity-verifier
+    on_fail: springboot-migrator
+    requires: deployed_to_environment
+    checks:
+      - <migration-conventions:verification.api_parity_checks>
+
+  manual_test_passed:
+    description: A human tester exercised the deployed migration and confirms it behaves as expected.
+    manual: true
+    requires: deployed_to_environment

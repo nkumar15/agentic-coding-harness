@@ -20,14 +20,13 @@ auditable workflow layer that fits into an existing repository and engineering g
 |---|---|---|
 | Primary intent | Broad AI-driven agile development framework from ideation and planning through implementation. | Lightweight, repo-native workflow for consistent AI assistance in existing engineering repositories. |
 | Adoption model | Install a framework/ecosystem, commonly through `npx bmad-method install`. | Copy the workflow package, fill convention files, regenerate `.claude/` and `.codex/agents/`, then validate. |
-| Scope | Broad lifecycle support, modules, specialized agents, guided planning, and extension mechanisms. | Focused processes for feature, bug, chore, docs, and legacy-to-Spring-Boot migration workflows. |
+| Scope | Broad lifecycle support, modules, specialized agents, guided planning, and extension mechanisms. | Focused processes for feature, bug, chore, and docs workflows. |
 | Best fit | Teams that want a comprehensive AI-native agile method and are comfortable adopting a framework. | Teams that already have engineering practices and want agents to work inside existing repo standards. |
-| Context model | Builds context progressively through generated planning artifacts and project context. | Keeps mutable project facts in `.agents/rules/project-conventions.md` or `.agents/rules/migration-conventions.md`. |
+| Context model | Builds context progressively through generated planning artifacts and project context. | Keeps mutable project facts in `.agents/rules/project-conventions.md`. |
 | Governance model | Structured workflows and agents guide the lifecycle. | Explicit process gates, verifier/reviewer roles, human approvals, and CI portability validation. |
 | Host support | Supports multiple AI coding assistants that can consume custom prompts/context. | Generates first-class adapters for Codex and Claude Code from one `.agents/` source tree. |
-| Stack support | General and extensible through BMAD modules and customization. | Concrete reusable skills for Python/FastAPI, Java/Spring Boot, React, PostgreSQL, pytest, JUnit, and parity testing. |
+| Stack support | General and extensible through BMAD modules and customization. | Concrete reusable skills for Python/FastAPI, Java/Spring Boot, React, PostgreSQL, pytest, and JUnit. |
 | Human role | Human collaboration is part of guided workflows. | Human engineering judgment, testing standards, code review decisions, and approval gates remain authoritative. |
-| Migration support | Not a dedicated concern; general planning/implementation workflows would need to be adapted. | Dedicated `migration` process: analyze legacy code, design the microservice target mapping, migrate, then unit test, integration test, and deploy with manual test, all parity-gated. |
 
 ## How To Explain It To Teams
 
@@ -36,12 +35,11 @@ Use this framing:
 > BMAD is a comprehensive AI-native agile framework. Our reusable agentic coding workflow is a
 > lighter repo-native package designed to fit into existing engineering teams. It standardizes how
 > Codex and Claude assist with implementation, verification, and review work while keeping project
-> conventions, migration parity evidence, and human approval gates central.
+> conventions and human approval gates central.
 
-The practical reason for this package is internal reuse. It started as the workflow used to drive a
-legacy-to-Spring-Boot migration and was generalized into a repeatable pattern for guiding agents
-through requirements, design, implementation, verification, and review so other teams can adopt it
-for day-to-day feature work, bug fixes, chores, documentation, and further legacy migrations.
+The practical reason for this package is internal reuse: a repeatable pattern for guiding agents
+through requirements, design, implementation, verification, and review so teams can adopt it for
+day-to-day feature work, bug fixes, chores, and documentation.
 
 ## When To Use Which
 
@@ -58,7 +56,6 @@ Use this workflow package when:
 - project-specific engineering conventions already exist or can be documented
 - human review, verification evidence, approval gates, and governance need to stay explicit
 - Codex and Claude Code should share the same source workflow definitions
-- a legacy system needs an analyze -> design -> migrate -> unit test -> integration test -> deploy and manual test path with parity gates
 
 ## Sources
 

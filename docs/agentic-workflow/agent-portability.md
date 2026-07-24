@@ -8,7 +8,7 @@ generates host-specific adapter files for Claude Code and Codex.
 Edit shared workflow content under `.agents/`:
 
 - `.agents/rules/` for project, SCM, command, verification, and behavior conventions.
-- `.agents/process/` for feature, bug, chore, docs, migration, gates, and provider specs.
+- `.agents/process/` for feature, bug, chore, docs, gates, and provider specs.
 - `.agents/skills/` for reusable skill packages.
 - `.agents/roles/` for host-neutral role behavior.
 - `.agents/adapters/claude/` for Claude role metadata.
@@ -56,14 +56,12 @@ Detailed operating guides live in workflow-specific README files:
 - [Bug workflow](bug/README.md)
 - [Chore workflow](chore/README.md)
 - [Docs workflow](docs/README.md)
-- [Migration workflow](migration/README.md)
 
 ## Project-Specific Boundary
 
 Only convention files should contain project facts:
 
 - `.agents/rules/project-conventions.md`
-- `.agents/rules/migration-conventions.md`
 
 Everything else should refer back to those files for paths, commands, work-unit names, source roots,
 domain lists, deployment environments, and environment variables.

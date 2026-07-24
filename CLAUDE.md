@@ -21,7 +21,6 @@ Supported process specs:
 - `bug`: reproduce -> fix -> test.
 - `chore`: describe -> implement.
 - `docs`: write -> review.
-- `migration`: analyze -> design -> migrate -> unit test -> integration test -> deploy and manual test.
 
 ## Canonical Source
 

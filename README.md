@@ -93,18 +93,6 @@ flowchart TD
   classify --> docs[Docs]
   docs --> docsWork[Documentation change]
   docsWork --> docsGates[Review, merge]
-
-  classify --> migration[Legacy migration]
-  migration --> analyze[Analyze legacy code]
-  analyze --> analyzeApproval[Human approval]
-  analyzeApproval --> design[Microservice target design]
-  design --> designApproval[Human approval]
-  designApproval --> migrate[Migrate slice]
-  migrate --> migrateGates[Review, merge]
-  migrateGates --> unitTest[Unit test]
-  unitTest --> integrationTest[Integration test]
-  integrationTest --> deployTest[Deploy and manual test]
-  deployTest --> migrationGates[API parity, merge]
 ```
 
 ## Supported Workflows
@@ -115,7 +103,6 @@ flowchart TD
 | Bug | Existing behavior is wrong and needs a scoped fix plus regression evidence. | `.agents/process/bug.yaml` | reproduce -> fix -> test -> gates | [Bug workflow](docs/agentic-workflow/bug/README.md) |
 | Chore | Maintenance work does not need product requirements or architecture. | `.agents/process/chore.yaml` | scoped maintenance -> gates | [Chore workflow](docs/agentic-workflow/chore/README.md) |
 | Docs | The change is documentation-only. | `.agents/process/docs.yaml` | documentation change -> review -> merge | [Docs workflow](docs/agentic-workflow/docs/README.md) |
-| Migration | A legacy system is being migrated to Spring Boot and needs legacy code analysis, microservice target design, and parity-gated implementation. | `.agents/process/migration.yaml` | analyze -> design -> migrate -> unit test -> integration test -> deploy and manual test -> gates | [Migration workflow](docs/agentic-workflow/migration/README.md) |
 
 All workflows are declarative. Process files name phases, roles, branches, artifacts, and gates.
 Gate definitions live in `.agents/process/gates.yaml`.
@@ -139,9 +126,8 @@ done criteria.
 ## Supported Skills
 
 Skills are reusable capability packages under `.agents/skills/`. They are not all used for every
-repository. Feature agents select stack skills from `.agents/rules/project-conventions.md`; migration
-agents select migration skills from `.agents/rules/migration-conventions.md`. Skill source files live
-under `.agents/skills/<skill>/SKILL.md`.
+repository. Feature agents select stack skills from `.agents/rules/project-conventions.md`. Skill
+source files live under `.agents/skills/<skill>/SKILL.md`.
 
 | Area | Skills | Used for |
 |---|---|---|
@@ -151,8 +137,7 @@ under `.agents/skills/<skill>/SKILL.md`.
 | Backend stacks | `python-fastapi`, `java-springboot` | Python/FastAPI backend work and Java/Spring Boot backend work. |
 | Frontend stack | `react-ui` | React UI changes using project-declared component, routing, state, and styling conventions. |
 | Data | `postgres-migrations` | PostgreSQL schema/data migrations. |
-| Test stacks | `pytest`, `junit`, `junit-parity-testing` | Python tests, Java JUnit tests, and migration parity testing. |
-| Migration | `legacy-code-analysis`, `migration-design` | Legacy characterization and Spring Boot migration design. |
+| Test stacks | `pytest`, `junit` | Python tests and Java JUnit tests. |
 
 ## Supported External Integrations
 

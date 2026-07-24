@@ -123,14 +123,16 @@ def codex_instructions(role_name: str, source_role: str, skills: list[str]) -> s
         "- .agents/rules/scm-conventions.md",
         "- .agents/rules/command-execution.md",
         "- .agents/rules/project-conventions.md for feature, bug, chore, and docs work",
-        "- .agents/rules/migration-conventions.md for migration work",
     ]
+    if (AGENTS / "rules" / "migration-conventions.md").is_file():
+        lines.append("- .agents/rules/migration-conventions.md for migration work")
     if skills:
         lines.extend(
             [
                 "",
-                "Resolve project or migration conventions, active process phase, and touched files",
-                "first. Then read and apply only the relevant skills from this adapter list:",
+                "Resolve project conventions (and migration conventions when this repository has",
+                "adopted the migration workflow), active process phase, and touched files first. Then",
+                "read and apply only the relevant skills from this adapter list:",
             ]
         )
         lines.extend(f"- .agents/skills/{skill}/SKILL.md" for skill in skills)

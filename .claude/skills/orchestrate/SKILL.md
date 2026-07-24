@@ -1,6 +1,6 @@
 ---
 name: orchestrate
-description: Drive a tracked work item through its declared process, enforcing gates and delegating each phase to the declared role. Use when starting, advancing, or resuming feature, bug, chore, docs, or migration work.
+description: Drive a tracked work item through its declared process, enforcing gates and delegating each phase to the declared role. Use when starting, advancing, or resuming feature, bug, chore, or docs work.
 license: Proprietary
 compatibility: Host-neutral repository workflow
 metadata:
@@ -23,7 +23,6 @@ facts, concrete commands, or host-specific launch mechanics.
 | Gates | `.claude/process/gates.yaml` | Defines gate meaning, gate agents, commands, manual stops, and routing. |
 | Provider | `.claude/process/provider.<provider>.yaml` | Maps abstract tracker/VCS operations to concrete commands or manual operations. |
 | Project conventions | `.claude/rules/project-conventions.md` | Supplies application-specific facts for feature, bug, chore, and docs work. |
-| Migration conventions | `.claude/rules/migration-conventions.md` | Supplies migration-specific facts for migration work. |
 
 ## Provider Operations
 
@@ -72,11 +71,11 @@ instructions:
 
 Gate failures are hard stops. Do not skip, downgrade, or work around a failed gate.
 
-## Migration Resume Checkpoint
+## Resume Checkpoint
 
-Migration processes may include expensive offline gates followed by a manual deploy boundary. If the
-active process or migration conventions define a checkpoint path, write a checkpoint after all
-offline gates pass and before the manual deploy gate. Record:
+A process with expensive offline gates followed by a manual deploy boundary may define a checkpoint
+path. If it does, write a checkpoint after all offline gates pass and before the manual deploy gate.
+Record:
 
 - work-unit name
 - branch

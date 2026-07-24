@@ -7,7 +7,7 @@ What is not here:
 - Lifecycle phase order and gates live in `.claude/process/<type>.yaml`.
 - Tracker and PR commands live in `.claude/process/provider.<provider>.yaml`.
 - Project-specific work-unit names, release rules, and verification commands live in
-  `.claude/rules/project-conventions.md` or `.claude/rules/migration-conventions.md`.
+  `.claude/rules/project-conventions.md`.
 
 ## Core Principles
 
@@ -28,7 +28,6 @@ What is not here:
 | `bug` | `.claude/process/bug.yaml` | reproduce -> fix -> test |
 | `chore` | `.claude/process/chore.yaml` | describe -> implement |
 | `docs` | `.claude/process/docs.yaml` | write -> review |
-| `migration` | `.claude/process/migration.yaml` | analyze -> design -> migrate -> unit test -> integration test -> deploy and manual test |
 
 ## Branch Naming
 
@@ -40,11 +39,6 @@ prefixes include:
 - `feature/dev-`
 - `bugfix/`
 - `chore/`
-- `migrate/arch-`
-- `migrate/dev-`
-- `migrate/unit-`
-- `migrate/integration-`
-- `migrate/deploy-`
 
 ## Change Requests
 

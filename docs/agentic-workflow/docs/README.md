@@ -31,7 +31,7 @@ consuming repository can add a docs-author role if it wants a named documentatio
 ## Phase Details
 
 The `docs` phase changes only documentation. If the work requires source, test, build, deployment,
-or behavior changes, route it through feature, bug, chore, or migration instead.
+or behavior changes, route it through feature, bug, or chore instead.
 
 Documentation should follow the project-defined documentation root, naming, ownership, style, and
 review requirements.

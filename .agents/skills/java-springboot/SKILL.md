@@ -17,9 +17,9 @@ here.
 When a contract (OpenAPI/Swagger) exists, treat it as authoritative: every path, param, header,
 field name, type, and status code must match it exactly. Never invent or rename contract fields.
 
-For migrate-phase implementation, read `references/migration-implementation-checklist.md` and apply
-it per approved work package. Architecture/design traceability belongs to the `migration-design`
-skill.
+If this repository has adopted the separate `migration-workflow` add-on for a legacy-to-Spring-Boot
+migration, also read its `references/migration-implementation-checklist.md` and apply it per
+approved work package; architecture/design traceability belongs to its `migration-design` skill.
 
 ---
 
@@ -77,7 +77,7 @@ public ResponseEntity<?> queryWidget(
   behavioral parity is won.
 - Pass tenant id and correlation id through to downstream calls for routing + tracing.
 - Implement behavior-affecting config/reference-data decisions exactly as approved by migration
-  design. If a branch, downstream URL, rule input, error mapping, threshold, or market/peer
+  design. If a branch, downstream URL, rule input, error mapping, threshold, or tenant/peer
   mapping comes from config, keep that dependency visible in the service/config layer and cover it
   with tests.
 
@@ -165,7 +165,7 @@ public WidgetResponse getWidget(String id, String tenantId, String requestId) {
   design's default/fallback/missing-value behavior instead of inventing a safer-looking default.
 - Do not copy legacy runtime config file values into Java constants unless the approved design
   explicitly classifies them as static reference data.
-- Tests must cover config-driven branches, defaults, missing-value behavior, and env/tenant/market
+- Tests must cover config-driven branches, defaults, missing-value behavior, and env/tenant/tenant
   variance that the approved design marks in scope.
 
 ## Runtime Health
