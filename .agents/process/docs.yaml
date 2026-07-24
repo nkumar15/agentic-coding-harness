@@ -1,0 +1,16 @@
+# Documentation-only process.
+
+process: docs
+issue_label: docs
+description: Documentation only. Write -> review. Single change request.
+
+phases:
+  - id: docs
+    branch: docs/<issue>-<name>
+    artifact: documentation
+    link: final
+    entry_gate: none
+    exit_gate:
+      all_of: [review_approved, change_request_merged]
+
+done_label: phase:done

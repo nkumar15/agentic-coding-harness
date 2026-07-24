@@ -1,0 +1,8 @@
+name: code-reviewer
+source_role: .agents/roles/code-reviewer.md
+output: .codex/agents/code-reviewer.toml
+model: gpt-5-codex
+reasoning_effort: high
+tools: [read, search, exec]
+skills: [application-verification, postgres-migrations, python-fastapi, java-springboot, react-ui, pytest, junit]
+fallback: inline

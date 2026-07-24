@@ -1,0 +1,9 @@
+name: full-stack-developer
+description: Implements feature, bug, chore, and docs changes from the active process phase.
+source_role: .agents/roles/full-stack-developer.md
+output: .claude/agents/full-stack-developer.md
+model: sonnet
+tools: [Read, Glob, Grep, Write, Edit, Bash]
+skills: [application-implementation, postgres-migrations, python-fastapi, java-springboot, react-ui, pytest, junit]
+memory: project
+color: green

@@ -1,0 +1,8 @@
+name: springboot-migrator
+source_role: .agents/roles/springboot-migrator.md
+output: .codex/agents/springboot-migrator.toml
+model: gpt-5-codex
+reasoning_effort: high
+tools: [read, search, write, edit, exec]
+skills: [java-springboot, junit-parity-testing]
+fallback: inline

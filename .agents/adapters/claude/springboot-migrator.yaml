@@ -1,0 +1,9 @@
+name: springboot-migrator
+description: Implements a webMethods domain migration end to end from the approved target-design document.
+source_role: .agents/roles/springboot-migrator.md
+output: .claude/agents/springboot-migrator.md
+model: opus
+tools: [Read, Glob, Grep, Write, Edit, Bash]
+skills: [java-springboot, junit-parity-testing]
+memory: project
+color: green

@@ -1,0 +1,9 @@
+name: legacy-code-analyzer
+description: Analyzes a legacy source domain and produces the analyze-phase migration report and golden fixtures.
+source_role: .agents/roles/legacy-code-analyzer.md
+output: .claude/agents/legacy-code-analyzer.md
+model: opus
+tools: [Read, Glob, Grep, Write, Bash]
+skills: [legacy-code-analysis]
+memory: project
+color: red

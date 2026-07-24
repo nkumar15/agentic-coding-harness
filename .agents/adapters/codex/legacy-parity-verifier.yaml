@@ -1,0 +1,8 @@
+name: legacy-parity-verifier
+source_role: .agents/roles/legacy-parity-verifier.md
+output: .codex/agents/legacy-parity-verifier.toml
+model: gpt-5-codex
+reasoning_effort: medium
+tools: [read, exec]
+skills: [junit-parity-testing]
+fallback: inline

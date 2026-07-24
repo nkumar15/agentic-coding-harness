@@ -1,0 +1,7 @@
+name: springboot-migration-verifier
+source_role: .agents/roles/springboot-migration-verifier.md
+output: .codex/agents/springboot-migration-verifier.toml
+model: gpt-5-codex
+reasoning_effort: low
+tools: [read, exec]
+fallback: inline

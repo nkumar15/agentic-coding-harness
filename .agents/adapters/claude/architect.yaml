@@ -1,0 +1,9 @@
+name: architect
+description: Produces feature architecture from approved PRDs.
+source_role: .agents/roles/architect.md
+output: .claude/agents/architect.md
+model: opus
+tools: [Read, Glob, Grep, Write, Bash]
+skills: [feature-architecture, postgres-migrations, python-fastapi, java-springboot, react-ui, pytest, junit]
+memory: project
+color: red

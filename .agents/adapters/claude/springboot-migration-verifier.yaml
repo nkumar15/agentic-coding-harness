@@ -1,0 +1,8 @@
+name: springboot-migration-verifier
+description: Evaluates domain implementation, cross-domain regression, and local Spring Boot app health gates by running declared checks and writing the implementation verification report. Reports only, never fixes.
+source_role: .agents/roles/springboot-migration-verifier.md
+output: .claude/agents/springboot-migration-verifier.md
+model: haiku
+tools: [Read, Bash]
+color: yellow
+maxTurns: 10

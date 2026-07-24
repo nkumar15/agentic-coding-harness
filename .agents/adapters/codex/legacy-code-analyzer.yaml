@@ -1,0 +1,8 @@
+name: legacy-code-analyzer
+source_role: .agents/roles/legacy-code-analyzer.md
+output: .codex/agents/legacy-code-analyzer.toml
+model: gpt-5-codex
+reasoning_effort: high
+tools: [read, search, write, exec]
+skills: [legacy-code-analysis]
+fallback: inline

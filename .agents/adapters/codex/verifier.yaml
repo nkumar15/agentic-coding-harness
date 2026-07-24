@@ -1,0 +1,8 @@
+name: verifier
+source_role: .agents/roles/verifier.md
+output: .codex/agents/verifier.toml
+model: gpt-5-codex
+reasoning_effort: low
+tools: [read, exec]
+skills: [application-verification, pytest, junit]
+fallback: inline

@@ -1,0 +1,9 @@
+name: prd-writer
+description: Creates Product Requirements Documents for feature work.
+source_role: .agents/roles/prd-writer.md
+output: .claude/agents/prd-writer.md
+model: sonnet
+tools: [Read, Glob, Grep, Write, Bash]
+skills: [prd]
+memory: project
+color: cyan

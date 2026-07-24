@@ -1,0 +1,9 @@
+name: springboot-migration-reviewer
+description: Reviews migrated Spring Boot code for correctness, contract compliance, parity readiness, and convention adherence.
+source_role: .agents/roles/springboot-migration-reviewer.md
+output: .claude/agents/springboot-migration-reviewer.md
+model: sonnet
+tools: [Read, Glob, Grep, Bash]
+skills: [java-springboot, junit-parity-testing]
+memory: project
+color: blue

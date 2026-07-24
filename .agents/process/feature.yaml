@@ -1,0 +1,36 @@
+# Feature SDLC process.
+#
+# Project-specific PRD and architecture artifact locations live in
+# `.agents/rules/project-conventions.md`.
+
+process: feature
+issue_label: feature
+description: New functionality. PRD -> architecture -> development.
+
+phases:
+  - id: prd
+    agent: prd-writer
+    branch: docs/<issue>-<name>
+    artifact: PRD artifact path from project conventions
+    link: intermediate
+    entry_gate: none
+    exit_gate: change_request_merged
+
+  - id: architecture
+    agent: architect
+    branch: feature/arch-<issue>-<name>
+    artifact: feature architecture artifact path from project conventions
+    link: intermediate
+    entry_gate: change_request_merged:prd
+    exit_gate: change_request_merged
+
+  - id: development
+    agent: full-stack-developer
+    branch: feature/dev-<issue>-<name>
+    artifact: code, tests, and verification evidence
+    link: final
+    entry_gate: change_request_merged:architecture
+    exit_gate:
+      all_of: [checks_green, feature_verification, review_approved, change_request_merged]
+
+done_label: phase:done

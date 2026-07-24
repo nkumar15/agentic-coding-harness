@@ -1,0 +1,8 @@
+name: api-contract-verifier
+description: Evaluates the contract_verified gate by diffing the Spring Boot OpenAPI shape against the target API specification. Reports only, never fixes.
+source_role: .agents/roles/api-contract-verifier.md
+output: .claude/agents/api-contract-verifier.md
+model: sonnet
+tools: [Read, Bash]
+color: blue
+maxTurns: 15
