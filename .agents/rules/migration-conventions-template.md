@@ -34,7 +34,7 @@ provide the full detail behind each row.
 | Source decision table paths | Market/tenant: `<FILL_IN: e.g. legacy/wm_myapp_impl/framework/rules/*TenantRules/Decision Tables/*.decisiontable>`; shared/common: `<FILL_IN: e.g. legacy/wm_myapp_impl/framework/rules/CommonRules/Decision Tables/*.decisiontable — or "none">` |
 | Rule fixture generator | `<FILL_IN: e.g. tools/decision-table-parser/parse_decision_tables.py — or "none">` |
 | Rule fixture path pattern | `<FILL_IN: e.g. tests/parity-data/rules/<DecisionTable>/<Market>.json>` |
-| Disallowed rule parser | `<FILL_IN: e.g. tools/jessml-parser/parse_jessml.py (reason: stale source) — or "none">` |
+| Disallowed rule parser | `<FILL_IN: e.g. tools/legacy-rule-export-parser/parse_export.py (reason: stale source) — or "none">` |
 | Excluded legacy submodules | `<FILL_IN: e.g. wm_myapp_gateway, wm_myapp_integration — or "none">` |
 | Tenant identity field | `<FILL_IN: e.g. x-tenant-id / tenantId — or "none" if single-tenant>` |
 | Tenant registry | `<FILL_IN: e.g. REGION_A=1, REGION_B=2 — or "none">` |

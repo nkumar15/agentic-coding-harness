@@ -42,15 +42,15 @@ Example for a Python/FastAPI API:
 
 | Role term | Project value |
 |---|---|
-| Project name | health-claims |
-| Product/domain summary | Internal health claims API for claim lookup, claim status, and adjudication workflows. |
+| Project name | ticket-system |
+| Product/domain summary | Internal ticket system API for ticket lookup, ticket status, and assignment workflows. |
 | Primary language/framework | Python 3.11 / FastAPI |
 | Backend stack skills | python-fastapi |
 | Backend test skills | pytest |
 | Frontend stack skills | none |
 | Database/change-data skills | postgres-migrations if PostgreSQL schema changes are in scope; otherwise none |
 | Rule-engine skills | none |
-| Application source root | src/health_claims |
+| Application source root | src/ticket_system |
 | Test root | tests |
 | PRD directory | docs/application/prd |
 | Feature architecture directory | docs/application/architecture/features |
@@ -58,7 +58,7 @@ Example for a Python/FastAPI API:
 | Verification evidence location | PR body and docs/application/verification |
 | Global verification commands | python -m ruff check src tests; python -m mypy src; python -m pytest |
 | Feature-specific verification source | PRD and architecture Verification sections |
-| Local runtime command | uvicorn health_claims.main:app --reload |
+| Local runtime command | uvicorn ticket_system.main:app --reload |
 | Deployment target | none for initial local onboarding |
 ```
 
@@ -74,12 +74,12 @@ Example:
 ```md
 ## Source Layout
 
-- `src/health_claims/main.py` creates the FastAPI app.
-- `src/health_claims/api/routes/` contains HTTP routers.
-- `src/health_claims/schemas/` contains Pydantic request and response models.
-- `src/health_claims/services/` contains business orchestration.
-- `src/health_claims/repositories/` contains persistence or downstream data access.
-- `src/health_claims/config.py` owns runtime configuration.
+- `src/ticket_system/main.py` creates the FastAPI app.
+- `src/ticket_system/api/routes/` contains HTTP routers.
+- `src/ticket_system/schemas/` contains Pydantic request and response models.
+- `src/ticket_system/services/` contains business orchestration.
+- `src/ticket_system/repositories/` contains persistence or downstream data access.
+- `src/ticket_system/config.py` owns runtime configuration.
 - `tests/unit/` contains fast unit tests.
 - `tests/integration/` contains tests requiring app wiring or external service fakes.
 - No generated source files currently; if generated files are added later, document their path here
@@ -187,7 +187,7 @@ Use `.agents/process/feature.yaml` when the work needs requirements and architec
 Example request:
 
 ```text
-Use the feature workflow for "add claim status search". Start with the PRD phase.
+Use the feature workflow for "add ticket status search". Start with the PRD phase.
 ```
 
 The expected path is:
@@ -212,7 +212,7 @@ Use `.agents/process/bug.yaml` when fixing existing behavior.
 Example request:
 
 ```text
-Use the bug workflow to fix the incorrect 404 response for claim lookup.
+Use the bug workflow to fix the incorrect 404 response for ticket lookup.
 ```
 
 The developer should reproduce or characterize the defect, add a regression test when feasible,

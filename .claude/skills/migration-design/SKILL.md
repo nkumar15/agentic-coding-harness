@@ -63,7 +63,7 @@ decisions; the skill template is the reusable output contract.
   evidence from legacy `.decisiontable` artifacts. Repository `rules/` assets are migrated
   implementation output, not source evidence; if they already exist, design must verify they follow
   the migration process before wiring: compile/load or build success, module/package routing, model
-  compatibility, fixture/test reconciliation, and market isolation. Stale `.jessML`-derived
+  compatibility, fixture/test reconciliation, and market isolation. Stale/non-authoritative
   evidence is not acceptable unless a human explicitly approved a named exception.
 - Create `WP-*` work packages that are independently implementable and include files/classes,
   dependencies, acceptance criteria, tests/gates, and open gaps.

@@ -442,7 +442,7 @@ not markets; keep them out of the per-market matrix and report them separately.
 
 ### Market Rule Project Inventory
 
-| Market | Legacy decision-table project | Source `.decisiontable` count checked | Migrated rule impl count checked | Fixture count checked | Stale `.jessML` ignored? | Notes | Evidence confidence |
+| Market | Legacy decision-table project | Source `.decisiontable` count checked | Migrated rule impl count checked | Fixture count checked | Stale/non-authoritative source ignored? | Notes | Evidence confidence |
 | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
 | `<market>` | `<path>` | `<count>` | `<count>` | `<count>` | `<yes/no/exception id>` | `<missing/extra assets>` | `<proven/inferred/not-found/open-question>` |
 
@@ -487,7 +487,8 @@ If a table is required but an asset or fixture is missing, record it as a blocke
 reviewer explicitly approves a documented gap.
 
 Include this source row-count matrix before coverage verdicts. Counts must come from legacy
-`.decisiontable` rule rows, not `.jessML`, the migrated rule implementation, or repository `rules/`.
+`.decisiontable` rule rows, not another stale/non-authoritative source, the migrated rule
+implementation, or repository `rules/`.
 
 Market decision-table matrix:
 
@@ -594,7 +595,7 @@ Source decision-table evidence reviewed:
   - `<source decision-table path from migration conventions>/<table>.decisiontable>`
 - Validation corrections:
   - `<correction or none>`
-- Stale `.jessML` handling:
+- Stale/non-authoritative source handling:
   - `<ignored / named human-approved exception>`
 
 Fixture blockers:

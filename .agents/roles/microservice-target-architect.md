@@ -139,8 +139,8 @@ The design artifact must define:
 
 If characterization lacks required behavior, say exactly what is missing and stop rather than
 designing over the gap. Missing markets, unavailable rule implementations, existing `rules/` assets without
-implementation-shape verification, migrated `rules/` assets treated as source evidence, stale
-`.jessML`-derived rule evidence, unresolved conversion-fidelity blockers, unanalyzed
+implementation-shape verification, migrated `rules/` assets treated as source evidence,
+stale/non-authoritative rule evidence, unresolved conversion-fidelity blockers, unanalyzed
 excluded legacy submodule dependencies, unresolved side effects, orphan characterization questions,
 orphan characterization scenarios, unclassified existing target implementation, and unresolved open
 questions must be explicit blockers or documented design gaps.

@@ -377,7 +377,7 @@ Runtime notes:
 Design may wire only audited rule assets reconciled to legacy `.decisiontable` source. Existing
 rule assets under repository `rules/` are candidate migrated implementation and must also pass
 implementation-shape verification: compile/load or build success, module/package routing, model
-compatibility, fixture/test reconciliation, and market isolation. Stale `.jessML`-derived
+compatibility, fixture/test reconciliation, and market isolation. Stale/non-authoritative
 evidence is not acceptable unless a human explicitly approved a named exception. Add remediation
 work packages before any story that wires an affected rule.
 

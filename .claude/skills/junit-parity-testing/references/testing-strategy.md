@@ -60,7 +60,8 @@ legacy behavior.
 - Fixture files under the project-declared rules fixture path are the parity contract. A common
   pattern is `tests/parity-data/rules/<DecisionTable>/<TenantOrMarket>.json`.
 - Fixtures must be derived from the authoritative legacy `.decisiontable` artifacts named in the
-  project migration conventions, not repository `rules/` migrated assets or stale `.jessML`.
+  project migration conventions, not repository `rules/` migrated assets or another
+  stale/non-authoritative source.
 - Candidate fixture data and the per-market source rule-count matrix should be generated during
   characterization with the project-approved parser declared in migration conventions, then
   validated/corrected before being treated as approved golden fixtures.

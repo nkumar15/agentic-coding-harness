@@ -72,7 +72,7 @@ Focus findings on:
 - no unresolved decision-table-to-target conversion loss in wired rules or generated tests
 - no wired `rules/` asset without implementation-shape verification
 - no repository `rules/` assets used as characterization source evidence
-- no stale `.jessML`-derived rule evidence used as parity source without explicit human approval
+- no stale/non-authoritative rule evidence used as parity source without explicit human approval
 - no direct downstream system or JDBC access
 - SOAP/REST peer clients match approved namespace/localPart or method/path, schemaVersion/action,
   request/response fields, fault mapping, endpoint config, and tests

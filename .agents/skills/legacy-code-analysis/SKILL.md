@@ -147,7 +147,7 @@ Before analyze approval for a decision-table-backed domain, verify and document:
 - every market/tenant relevant to the domain has its own required fixture file for each
   required/shared/unknown decision table;
 - generated candidate fixture files exist for every required/shared/unknown decision table and were
-  produced from `.decisiontable`, not `.jessML`;
+  produced from `.decisiontable`, not a stale/non-authoritative source;
 - a decision-table rule-count matrix exists in the report showing source row counts per required
   table per market and totals;
 - every legacy decision table in the checked market projects is classified as

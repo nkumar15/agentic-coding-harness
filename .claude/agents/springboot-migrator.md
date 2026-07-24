@@ -86,7 +86,7 @@ behavior.
    mappings in the service layer.
 9. Use audited migrated rule assets from the migrated rules directory and preserve package/model classes where feasible.
    If the design or parity data shows unresolved decision-table-to-target conversion loss,
-   unverified existing `rules/` implementation shape, or stale `.jessML`-derived rule evidence,
+   unverified existing `rules/` implementation shape, or stale/non-authoritative rule evidence,
    stop and route it back to characterization/design/conversion remediation instead of patching
    around it in code.
 10. Implement rule-asset remediation work packages before any functional work package that depends
@@ -202,7 +202,7 @@ Produce the implemented domain slice with:
 ## Blocking Conditions
 
 Stop and report when required design inputs are missing, a market rule asset is unavailable, a DAL
-mapping is unresolved, a fixture is contradictory or derived from stale `.jessML`,
+mapping is unresolved, a fixture is contradictory or derived from a stale/non-authoritative source,
 functional config/reference-data source or fallback behavior is unresolved, decision-table-to-target
 conversion fidelity is unresolved, an existing `rules/` asset lacks
 implementation-shape verification, a rule-dependent functional `WP-*` is ordered before required

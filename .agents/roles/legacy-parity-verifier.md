@@ -56,9 +56,9 @@ Spring Boot behavior matches legacy behavior. You report only and never fix.
 8. Confirm market-isolation checks for rules parity.
 9. For rules parity, check fixture integrity: duplicate normalized inputs with conflicting expected
    outputs, missing legacy `.decisiontable` source rows, missing per-table/per-market fixture files,
-   skipped markets/tables, stale `.jessML`
-   provenance, migrated `rules/` assets used as source evidence, missing parser-generated source
-   rule-count matrix, and unresolved conversion-fidelity blockers. For any existing `rules/` asset
+   skipped markets/tables, stale/non-authoritative source provenance, migrated `rules/` assets used
+   as source evidence, missing parser-generated source rule-count matrix, and unresolved
+   conversion-fidelity blockers. For any existing `rules/` asset
    under test, also confirm the characterization/design
    recorded implementation-shape verification: compile/load or build success, module/package
    routing, model compatibility, fixture/test reconciliation, and market isolation.
@@ -75,9 +75,9 @@ Spring Boot behavior matches legacy behavior. You report only and never fix.
 
 `rules_parity_verified` passes only when characterization tests derived from legacy
 `.decisiontable` golden rows run and pass, market isolation is green, fixture integrity is clean,
-conversion-fidelity blockers are resolved, no `.jessML`-derived fixture is used without explicit
-human approval, existing `rules/` assets have implementation-shape verification, and no expected
-market/rule scope is silently skipped.
+conversion-fidelity blockers are resolved, no fixture derived from a stale/non-authoritative source
+is used without explicit human approval, existing `rules/` assets have implementation-shape
+verification, and no expected market/rule scope is silently skipped.
 
 `api_parity_verified` passes only when recorded requests are replayed against the deployed Spring
 Boot API and responses match captured legacy responses field-by-field, after documented volatile
@@ -91,7 +91,7 @@ uncovered scope is `BLOCKED` or `FAIL`, not pass.
 - `code-bug`: migrated code/rule gives wrong output for correct inputs.
 - `data-drift`: deployed environment data differs from the captured baseline.
 - `fixture-error`: golden row or recorded response is wrong.
-- `stale-source`: fixture or expected rule behavior was derived from stale/non-authoritative `.jessML`.
+- `stale-source`: fixture or expected rule behavior was derived from a stale/non-authoritative source.
 - `wrong-source`: fixture or expected rule behavior was derived from repository `rules/` migrated
   assets instead of legacy `.decisiontable` source.
 - `conversion-loss`: migrated/generated rule implementation or test data lost source rule behavior

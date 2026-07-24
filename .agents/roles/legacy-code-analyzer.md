@@ -83,10 +83,10 @@ source, and your role is to reveal them without inventing behavior.
 14. For rule behavior, use only legacy `.decisiontable` artifacts under the legacy decision table
     paths declared in project conventions as the source of truth unless a human names an additional
     SME-approved corpus. Ignore repository `rules/` for analysis; it is migrated rule
-    implementation output. Legacy `.jessML` files are stale/non-authoritative for rule analysis and
-    must not be used to derive rule counts, fixtures, market coverage, or behavior unless a human
-    explicitly approves a named exception. Do not use the disallowed rule parser (declared in
-    project conventions) as the rule source for characterization.
+    implementation output. Stale/non-authoritative rule-extraction artifacts must not be used to
+    derive rule counts, fixtures, market coverage, or behavior unless a human explicitly approves a
+    named exception. Do not use the disallowed rule parser (declared in project conventions) as the
+    rule source for characterization.
     Keep shared/common rule projects separate from market/tenant rule projects; never report them
     as a market column. When a rule wrapper targets a same-named decision table in multiple rule
     projects, prove the active project from the wrapper namespace, project-name pipeline value, or
