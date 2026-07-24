@@ -157,7 +157,7 @@ under `<FILL_IN: legacy source root>`.
 Shared/common decision tables: `<FILL_IN: glob for non-tenant shared/common decision tables — or "none">`.
 Shared/common projects are not tenants/markets; classify them separately when they are required or
 transitively required by a migration unit.
-`<FILL_IN: any tenant-specific extra tables, e.g. "HK has extra Booster DTs" — or delete this line>`.
+`<FILL_IN: any tenant-specific extra tables, e.g. "Market C has extra region-specific decision tables" — or delete this line>`.
 
 ## Rule Governance
 
@@ -204,7 +204,7 @@ Decision-table classification (use in characterization reports):
 - DAL: `<FILL_IN: stack, e.g. Spring Boot MyBatis>`, base path `<FILL_IN: e.g. /myapp/db/v1>`,
   port `<FILL_IN: e.g. 8003>`. Inventory in `<FILL_IN: DAL mapping artifact path>`.
 - Base URL via `<FILL_IN: env var, e.g. MYAPP_DAL_BASE_URL>`. Other downstream URLs:
-  `<FILL_IN: list other env vars, e.g. POLICY_MANAGER_URL, POINTS_MANAGER_URL>` — never hardcode hosts.
+  `<FILL_IN: list other env vars, e.g. PRICING_SERVICE_URL, NOTIFICATION_SERVICE_URL>` — never hardcode hosts.
 - Multi-step ops use `<FILL_IN: atomic endpoint convention, e.g. t-post-* / t-delete-* endpoints>`.
 
 ## Parity & Verification

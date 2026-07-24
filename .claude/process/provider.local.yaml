@@ -1,6 +1,6 @@
 # Local provider adapter — GitHub tracking DISABLED.
 #
-# Selected by `provider: local` in config.yaml. Use this while you want to run the migration
+# Selected by `provider: local` in config.yaml. Use this while you want to run the workflow
 # process WITHOUT creating GitHub issues, labels, or PRs. Work happens on local branches; the
 # human review/approve gates become explicit confirmations in the session instead of PR merges.
 #
