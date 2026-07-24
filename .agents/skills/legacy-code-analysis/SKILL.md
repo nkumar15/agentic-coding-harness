@@ -339,7 +339,7 @@ marking characterization ready for approval.
 ## What to produce (the characterization / migration report)
 
 Use the canonical report template at
-`templates/characterization-report.md` when producing the characterization artifact. Keep the
+`templates/legacy-code-analysis.md` when producing the characterization artifact. Keep the
 template with this skill because the report shape is part of the WebMethods-analysis capability, not
 a project-specific implementation detail. Project-specific facts still come from the calling agent's
 conventions file.

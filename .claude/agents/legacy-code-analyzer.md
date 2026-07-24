@@ -143,7 +143,7 @@ source, and your role is to reveal them without inventing behavior.
 ## Required Output
 
 Produce `.analysis/<name>/<name>-characterization.md` using the canonical template from
-`.claude/skills/legacy-code-analysis/templates/characterization-report.md`. The report must keep the
+`.claude/skills/legacy-code-analysis/templates/legacy-code-analysis.md`. The report must keep the
 template's persona-first section structure: evidence confidence, persona guide, executive review,
 functional/non-functional summaries, technical legacy analysis, design/code handoff, open
 questions, and analyze gate readiness.
