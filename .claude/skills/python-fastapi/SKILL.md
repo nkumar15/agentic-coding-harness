@@ -37,7 +37,7 @@ layout, database stack, auth model, command names, and runtime behavior.
 - Put business logic in services, not endpoint functions.
 - Services should receive dependencies from callers instead of constructing global clients or DB
   sessions internally.
-- Keep transaction boundaries explicit and consistent with project conventions.
+- Keep atomic write boundaries explicit and consistent with project conventions.
 - Raise domain exceptions or result types that the API layer maps consistently.
 
 ## Persistence

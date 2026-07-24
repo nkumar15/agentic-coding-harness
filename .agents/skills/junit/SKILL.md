@@ -21,7 +21,7 @@ test tags, and exact commands.
 - Prefer focused unit tests for pure logic, service orchestration, DTO mapping, validation, and
   error translation.
 - Add Spring MVC or WebFlux slice tests for controller request/response behavior.
-- Add integration tests only when wiring, persistence, messaging, transactions, or framework
+- Add integration tests only when wiring, persistence, messaging, atomic writes, or framework
   configuration is part of the change.
 - For migrations or legacy parity, use `junit-parity-testing` instead of this generic feature
   testing skill.

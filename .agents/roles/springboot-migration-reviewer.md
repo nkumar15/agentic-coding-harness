@@ -85,7 +85,7 @@ Focus findings on:
 - progress artifact resume/handoff quality
 - local app startup/health gate status and no unreviewed startup/config/packaging failures
 - Helm/deployment chart changes when runtime config, probes, ports, or service exposure changed
-- side-effect and transaction behavior
+- side-effect and atomic-write behavior
 - project conventions and maintainability
 
 ## Required Output

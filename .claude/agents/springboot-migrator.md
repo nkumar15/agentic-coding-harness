@@ -52,7 +52,7 @@ behavior.
   Blockers, Rule Asset Gap And Remediation Plan, Scenario To Test Traceability, and `WP-*` work
   packages.
 - Architecture Functional Config And Reference Data Design section for any config-driven branch,
-  downstream URL, rule input, threshold, market/partner mapping, error mapping, or fallback behavior
+  downstream URL, rule input, threshold, market/peer mapping, error mapping, or fallback behavior
   in the active work package.
 - Architecture Downstream Contract Design section for any SOAP/REST peer dependency in the active
   work package.
@@ -107,7 +107,7 @@ behavior.
    mapping, propagated headers/auth, timeout/retry, and content type exactly as the design
    specifies. Add focused client contract tests; do not treat a mocked success response as proof of
    the wire contract.
-15. Implement dependency behavior, side effects, transaction strategy, and complete error mapping
+15. Implement dependency behavior, side effects, atomic write strategy, and complete error mapping
    exactly as the design specifies. Preserve direct, dependency-propagated, shared/common,
    intentionally excluded, and unknown-reachability error-code classifications; do not implement a
    smaller mapper that only covers directly thrown domain codes.

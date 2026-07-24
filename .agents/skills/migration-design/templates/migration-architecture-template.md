@@ -35,7 +35,7 @@ drop characterization findings because they are inconvenient or already partiall
 | Downstream Contract Evidence | `<SOAP/REST namespace/localPart/path/schema/request/response/fault>` | Downstream Contract Design / Test Plan | `<decision/test/gap>` | `<status>` |
 | Functional Config And Reference Data | `<config keys/sources/consumers/variance/fallbacks>` | Functional Config And Reference Data Design / Test Plan | `<decision/test/gap>` | `<status>` |
 | Error Codes And Messages | `<direct/propagated/shared/unused/unknown codes>` | Error Handling / Test And Parity Plan | `<mapper decision/test/gap>` | `<status>` |
-| Side Effects And Transaction Boundaries | `<writes/order/idempotency>` | Side Effects And Transaction Strategy | `<decision/test>` | `<status>` |
+| Side Effects And Atomic Write Boundaries | `<writes/order/idempotency>` | Side Effects And Atomic Write Strategy | `<decision/test>` | `<status>` |
 | Data Operations | `<DAL/data mappings>` | DAL Calls | `<decision/test>` | `<status>` |
 | Rule Corpus / Required Rule Asset Coverage | `<tables/markets/fixtures/assets>` | Rules Design / Rule Asset Gap And Remediation Plan | `<decision/WP/test/gap>` | `<status>` |
 | Decision-Table-To-Target Conversion Fidelity Audit | `<asset verdicts>` | Decision-Table-To-Target Conversion Fidelity | `<wire/remediate/block>` | `<status>` |
@@ -144,7 +144,7 @@ Container notes:
 
 Show components inside the target domain module and directly used shared/rule components. Include
 controllers, services, mappers, validators, DAL clients, peer clients, rule facades, error mappers,
-configuration properties, and any component responsible for transaction/idempotency behavior.
+configuration properties, and any component responsible for atomic write/idempotency behavior.
 Every component shown here must map to a target file/class in the work packages or be marked as an
 approved existing component.
 
@@ -177,7 +177,7 @@ Component notes:
 - Components to create:
 - Components to reuse/refactor/replace:
 - Components intentionally omitted:
-- Transaction/idempotency ownership:
+- Atomic write/idempotency ownership:
 - Error mapping ownership:
 - Test seams/mocks:
 - Design gaps:
@@ -210,7 +210,7 @@ Component notes:
       contract tests.
 - [ ] Functional config/reference-data lookups have target source decisions, ownership,
       secret-safety handling, env/tenant/market variance, defaults/fallbacks, and test obligations.
-- [ ] Side effects, transaction boundary, rollback/compensation, idempotency, and partial failures
+- [ ] Side effects, atomic write boundary, rollback/compensation, idempotency, and partial failures
       are translated into target behavior.
 - [ ] Rule assets, model classes, market routing, fixture coverage, and decision-table-to-target
       conversion-fidelity verdicts are explicit.
@@ -362,7 +362,7 @@ Runtime notes:
 
 ## DAL Calls
 
-| Use Case | DAL Endpoint | Method | Request Mapping | Response Mapping | Transaction Boundary | Notes |
+| Use Case | DAL Endpoint | Method | Request Mapping | Response Mapping | Atomic Write Boundary | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | `<use case>` | `<path>` | `<method>` | `<mapping>` | `<mapping>` | `<boundary>` | `<notes>` |
 
@@ -395,7 +395,7 @@ remediation work packages rather than silently bypassing rule parity.
 | --- | --- | --- | --- | --- | --- | --- |
 | `<missing rule impl/model/routing/tests>` | `<tables/markets>` | `<generate/author/reconcile/wire>` | `<paths/classes>` | `<compile/load, fixture reconciliation, rules parity, market isolation>` | `<WP-id>` | `<WP-id or function>` |
 
-## Side Effects And Transaction Strategy
+## Side Effects And Atomic Write Strategy
 
 | Operation | Side Effect | Order | Boundary | Rollback / Compensation | Idempotency Guard | Partial Failure Behavior |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -509,7 +509,7 @@ paths, edge cases, negative cases, dependency failures, side effects, and market
 - [ ] Functional config/reference data has explicit target source decisions and tests; secrets are
       not copied into code, docs, fixtures, or logs.
 - [ ] Error handling covers the full characterized inventory, not only directly thrown domain codes.
-- [ ] Side effects and transaction boundaries are explicit.
+- [ ] Side effects and atomic write boundaries are explicit.
 - [ ] Rule assets, model classes, market gaps, and decision-table-to-target conversion-fidelity
       verdicts are explicit.
 - [ ] Existing `rules/` assets have implementation-shape verification before any work package

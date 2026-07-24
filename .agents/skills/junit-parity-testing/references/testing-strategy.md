@@ -28,7 +28,7 @@ legacy behavior.
 | SOAP/REST downstream contract evidence | Client contract test asserting endpoint config, namespace/localPart or method/path, schemaVersion/action, request/response/fault mapping, and headers/auth |
 | Runtime config / packaging / health-probe change | Local app health smoke plus Helm/deployment evidence |
 | Error-code inventory | Tests for direct domain codes, dependency-propagated codes, shared/common translation mappings, and explicit approved exclusions or gaps |
-| Side effect or transaction boundary | Service test for order/rollback/partial-failure behavior, plus API parity scenario where available |
+| Side effect or atomic write boundary | Service test for order/rollback/partial-failure behavior, plus API parity scenario where available |
 | Legacy `.decisiontable` row | Rules parity fixture/test row |
 | Market-specific rule behavior | Rules parity by market plus cross-market isolation guard |
 | Legacy API example | API parity recorded-replay fixture |
@@ -48,7 +48,7 @@ legacy behavior.
       propagated, shared/common translation, intentionally excluded, and unknown-reachability gaps.
 - [ ] Header/legal-entity/request-id propagation to DAL or downstream client.
 - [ ] Rule invocation inputs/outputs and market isolation when rules are touched.
-- [ ] Side-effect ordering, transaction boundary, rollback/compensation, or idempotency when touched.
+- [ ] Side-effect ordering, atomic write boundary, rollback/compensation, or idempotency when touched.
 - [ ] Local app health gate impact considered when startup, packaging, config binding, rules
       loading, or local dependencies are touched.
 - [ ] Helm/deployment impact considered when env vars, secrets, ports, probes, downstream URLs, or
@@ -115,7 +115,7 @@ legacy behavior.
 - Every migrated decision-table row has rules parity coverage unless explicitly excluded with human
   approval.
 - Every generated fixture set has duplicate/conflict validation.
-- Every multi-step write has transaction/partial-failure coverage where the behavior is in scope.
+- Every multi-step write has atomicity/partial-failure coverage where the behavior is in scope.
 - Every market-specific rule path has market-isolation coverage.
 - Every migration checkpoint proves the app still starts locally and health probes are aligned with
   deployment assets, or records an explicit approved gap.

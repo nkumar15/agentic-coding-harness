@@ -102,7 +102,7 @@ verifier runs it and reports; it never fixes — failures route back to the impl
 - Every migrated rule: one characterization case (auto-generated).
 - Every generated fixture set: duplicate-input/conflicting-output validation.
 - Every unit of work: the tenant-isolation guard.
-- Multi-step/transactional operations: a test covering the rollback path.
+- Multi-step/atomic operations: a test covering the rollback path.
 
 ## Don't
 

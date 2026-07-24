@@ -40,7 +40,7 @@ decisions; the skill template is the reusable output contract.
   Classify each existing item as `reuse`, `refactor`, `replace`, `defer`, or `unknown`, and create
   remediation work packages before coding stories that depend on it.
 - Carry `node.ndf`, pipeline lineage, MAP-node renames, branch logic, dependency behavior, side
-  effects, transaction boundaries, functional config/reference-data findings, and the complete
+  effects, atomic write boundaries, functional config/reference-data findings, and the complete
   characterized error-code inventory into explicit target decisions. Do not reduce error handling
   to directly hardcoded domain codes; preserve direct, dependency-propagated, shared/common
   translation, unused, and unknown-reachability classifications.
@@ -89,7 +89,7 @@ where each characterization section is consumed in the architecture artifact:
   env/tenant/market variance, defaults/fallbacks, failure behavior, and code/test obligations.
 - Error Codes And Messages -> Error Handling, exception mapper, response body/status mapping, and
   direct/propagated/shared/unused/unknown test obligations.
-- Side Effects And Transaction Boundaries -> transaction strategy, idempotency, duplicate guards,
+- Side Effects And Atomic Write Boundaries -> atomic write strategy, idempotency, duplicate guards,
   and partial-failure behavior.
 - Rule Corpus, Required Rule Asset Coverage, Golden Fixtures, and Conversion Fidelity Audit ->
   Rules Design, rule remediation work packages, and rules parity tests.

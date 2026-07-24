@@ -67,7 +67,7 @@ from legacy source during coding unless a blocker routes back to analyze/design.
 - [ ] Update Helm charts, base values, environment overlays, and secret-placeholder files when the
       `WP-*` changes runtime config, secrets, service ports, probes, downstream URLs, or deployment
       behavior. Never commit real secrets.
-- [ ] Preserve side-effect order, transaction boundary, idempotency, and partial-failure behavior in
+- [ ] Preserve side-effect order, atomic write boundary, idempotency, and partial-failure behavior in
       scope.
 - [ ] Add logging only where the approved design, source evidence, dependency behavior, or project
       convention justifies it. Use standard SLF4J/Spring Boot application logging, avoid method

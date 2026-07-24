@@ -105,7 +105,7 @@ template or handing off to design:
    committed fixtures.
 2. Trace the domain FlowService/business-rule call path to the directly invoked decision tables.
 3. Inspect outputs from directly invoked tables for shared/transitive dependencies, such as event
-   names, rule names, partner interface keys, benefit/cashback identifiers, config keys, or error
+   names, rule names, peer interface keys, reward/promotion identifiers, config keys, or error
    mappings that require another decision table to interpret behavior.
 4. Classify every decision table in the checked market/tenant projects and shared/common projects
    as `domain-required`, `shared-required`, `used-by-other-domain`, `not-used-by-this-domain`,
@@ -221,7 +221,7 @@ still required.
 - Capture dependency behavior, not just dependency names: protocol, source service path, target
   replacement, configuration key or endpoint source, auth/header propagation, timeout/retry behavior
   where discoverable, and the exact fault/error mapping.
-- For writes and other side effects, identify operation order, transaction boundary, rollback or
+- For writes and other side effects, identify operation order, atomic write boundary, rollback or
   compensation behavior, idempotency or duplicate guards, and partial-failure outcomes.
 
 ## Reading functional config and reference data
@@ -236,7 +236,7 @@ When a traced call graph invokes a config/reference lookup:
 - Capture the config service or wrapper path, `node.ndf` signature when present, and exact input
   fields used to construct the lookup key.
 - Trace the returned value through pipeline lineage: branch conditions, downstream endpoint
-  selection, rule inputs, partner/interface/event keys, response fields, error mappings, defaults,
+  selection, rule inputs, peer/interface/event keys, response fields, error mappings, defaults,
   and fallback behavior.
 - Identify the value source from project conventions: source file, deployment-mounted file,
   database/config table, environment variable, secret store, or checked-but-missing source.
@@ -252,7 +252,7 @@ When a traced call graph invokes a config/reference lookup:
   design, or unresolved design gap.
 
 Do not treat config as "non-functional" by default. A URL, feature switch, market mapping,
-business threshold, error translation key, or partner list stored in config is part of observable
+business threshold, error translation key, or peer list stored in config is part of observable
 legacy behavior and must be handed to design.
 
 ## Reading error handling
@@ -358,7 +358,7 @@ Structure the report for multiple review personas without losing evidence:
   scenarios, and failure modes.
 - **Developer** needs contract inputs, DTO/rule/DAL mappings, dependency behavior, target handoff
   risks, and implementation blockers.
-- **Architect / NFR reviewer** needs transaction boundaries, idempotency, timeouts, retries,
+- **Architect / NFR reviewer** needs atomic write boundaries, idempotency, timeouts, retries,
   auth/header propagation, observability, data consistency, and operational risks.
 
 Write the artifact as a progressive review document:
@@ -387,7 +387,7 @@ The required detail set is:
    explicit human decisions.
 3. **Functional behavior** — operation behavior, business decisions, market differences, rule
    outcomes, user-visible errors, side effects, and testable examples.
-4. **Non-functional behavior** — transaction, idempotency, retry/timeout, auth/header, observability,
+4. **Non-functional behavior** — atomicity, idempotency, retry/timeout, auth/header, observability,
    failure, and data-consistency behavior.
 5. **Architecture & context** — code structure, structural fit, dependencies, migration scope, and
    sequencing.
@@ -418,11 +418,11 @@ The required detail set is:
    including key construction, source file/table/env evidence, env/tenant/market/service variance,
    value consumers, defaults/fallbacks, secret-safety handling, target replacement options, and
    design action needed.
-16. **Side effects & transaction boundaries** — writes performed, order, transaction endpoint or
+16. **Side effects & atomic write boundaries** — writes performed, order, atomic endpoint or
    boundary, rollback/compensation behavior, idempotency or duplicate guard, partial-failure
    outcome, and parity fixture needed.
 17. **Data operations** — which tables/SQL ops, mapped to target data-layer endpoints; **flag
-   multi-step transactional ops and any stateful-pipeline ordering** (a field set in one step and
+   multi-step atomic ops and any stateful-pipeline ordering** (a field set in one step and
    read in a later one).
 18. **Rule corpus inventory and domain rule coverage** — all legacy market decision-table projects
     checked, every source decision table classified for the domain, directly required and
@@ -467,14 +467,14 @@ migration risk.
 - **Don't skip adapter or connector node.ndf files.** The calling flow shows that a dependency is
   invoked; the adapter/connector metadata may be the only place that exposes signature, connection,
   SQL/stored-procedure, and runtime settings.
-- **Don't flatten side effects.** Write ordering, transaction boundaries, rollback, and duplicate
+- **Don't flatten side effects.** Write ordering, atomic write boundaries, rollback, and duplicate
   guards are part of the legacy behavior.
 - **Don't trust one tenant.** Check every tenant's rule folder for variants.
 - **Don't confuse domain-used tables with the full checked rule corpus.** A domain migration stays
   domain-scoped, but characterization must still inventory every rule table in every relevant market
   and explicitly classify tables that are not required by the domain.
 - **Don't ignore shared/transitive rule dependencies.** If a domain-required table emits event
-  names, rule names, partner interfaces, benefit/cashback identifiers, or config keys that require
+  names, rule names, peer interfaces, reward/promotion identifiers, or config keys that require
   another rule table to interpret or evaluate the domain behavior, include that table as
   `shared-required` for this domain.
 - **Don't trust a generated rule implementation without a conversion audit.** A row can compile and

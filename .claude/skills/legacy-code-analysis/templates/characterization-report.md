@@ -25,7 +25,7 @@ questions in Open Questions / Decisions Required.
 | webMethods SME | Technical Legacy Analysis sections; Service Signature And Pipeline Schema; Pipeline Variable Lineage; MAP-Node Field Renames; Adapter And Connector `node.ndf` Inventory; Rule Corpus Inventory And Domain Coverage | FlowService call path, pipeline state, signatures, adapter/connector metadata, rule-source interpretation | Whether source evidence was read correctly and no legacy behavior was missed |
 | Tester / QA | Functional Behavior Review; Rule Behavior Review; Golden Fixtures; Decision-Table-To-Target Conversion Fidelity Audit; Error Codes And Messages | Test scenarios, edge cases, fixture coverage, rule parity risks, negative/failure cases | Whether enough evidence exists to build parity tests |
 | Developer | Architecture And Context; Operation Inventory; Dependency Behavior Register; Data Operations; Design And Code Handoff | DTO/rule/DAL mappings, dependencies, sequencing, implementation blockers | Whether design/coding can proceed without guessing |
-| Architect / NFR reviewer | Non-Functional Behavior Review; Dependency Behavior Register; Side Effects And Transaction Boundaries; Data Operations; Design And Code Handoff | transactions, retries, timeouts, idempotency, auth/header propagation, data consistency | Whether operational and integration risks are understood |
+| Architect / NFR reviewer | Non-Functional Behavior Review; Dependency Behavior Register; Side Effects And Atomic Write Boundaries; Data Operations; Design And Code Handoff | atomic writes, retries, timeouts, idempotency, auth/header propagation, data consistency | Whether operational and integration risks are understood |
 
 ## Executive Review
 
@@ -74,7 +74,7 @@ approved.
 - [ ] Functional config/reference-data lookups are traced from lookup key construction through
       value source, consumers, env/market/service variance, fallback/default behavior, and target
       migration action.
-- [ ] Side effects, writes, transaction boundary, rollback/compensation, idempotency, and
+- [ ] Side effects, writes, atomic write boundary, rollback/compensation, idempotency, and
       partial-failure outcomes are explicit or marked not found/open question.
 - [ ] Rule corpus inventory covers every applicable market rule project, plus shared/common rule
       projects when present, and classifies every decision table.
@@ -196,7 +196,7 @@ Inventory And Domain Coverage, Golden Fixtures, and Decision-Table-To-Target Con
 
 | Rule area | Business meaning | In-scope markets | Required tables | Fixture status | Conversion fidelity status | Evidence confidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| `<eligibility/config/rates/etc.>` | `<business purpose>` | `<markets>` | `<tables>` | `<covered/partial/blocker>` | `<pass/partial/blocker/not available>` | `<proven/inferred/not-found/open-question>` |
+| `<pricing/config/rates/etc.>` | `<business purpose>` | `<markets>` | `<tables>` | `<covered/partial/blocker>` | `<pass/partial/blocker/not available>` | `<proven/inferred/not-found/open-question>` |
 
 ## Non-Functional Behavior Review
 
@@ -207,7 +207,7 @@ consistency. If source does not expose a setting, record `not-found` with checke
 | --- | --- | --- | --- | --- | --- |
 | Auth/header propagation | `<behavior>` | `<path>` | `<risk>` | `<design/test implication>` | `<proven/inferred/not-found/open-question>` |
 | Timeout / retry | `<behavior>` | `<path>` | `<risk>` | `<design/test implication>` | `<proven/inferred/not-found/open-question>` |
-| Transaction boundary | `<behavior>` | `<path>` | `<risk>` | `<design/test implication>` | `<proven/inferred/not-found/open-question>` |
+| Atomic write boundary | `<behavior>` | `<path>` | `<risk>` | `<design/test implication>` | `<proven/inferred/not-found/open-question>` |
 | Idempotency / duplicate guard | `<behavior>` | `<path>` | `<risk>` | `<design/test implication>` | `<proven/inferred/not-found/open-question>` |
 | Partial failure handling | `<behavior>` | `<path>` | `<risk>` | `<design/test implication>` | `<proven/inferred/not-found/open-question>` |
 | Observability / audit logging | `<behavior>` | `<path>` | `<risk>` | `<design/test implication>` | `<proven/inferred/not-found/open-question>` |
@@ -381,7 +381,7 @@ connector metadata before inferring protocol.
 ## Functional Config And Reference Data
 
 Use this section for config/reference lookups that affect functional behavior. Examples include
-feature switches, market mappings, downstream URL selection, rule inputs, partner/interface/event
+feature switches, market mappings, downstream URL selection, rule inputs, peer/interface/event
 keys, thresholds, error translation keys, and fallback/default values. Do not copy secrets or
 personal/health data into this artifact.
 
@@ -412,12 +412,12 @@ source, propagated headers/auth, and timeout/retry/fault settings when source ex
 `node.ndf` lacks these details, list the exact file checked and raise an open question if the gap
 can change observable behavior.
 
-## Side Effects And Transaction Boundaries
+## Side Effects And Atomic Write Boundaries
 
 - Business writes:
 - Logging/audit effects:
 - External side effects:
-- Transaction boundary:
+- Atomic write boundary:
 - Rollback/compensation:
 - Idempotency or duplicate guard:
 - Partial-failure outcome:
@@ -468,8 +468,8 @@ design and migration for every applicable market or shared/common project.
 ### Domain Rule Usage Map
 
 Map the domain's legacy call path to the rule tables it actually needs. Include direct business-rule
-service calls and shared/transitive tables needed to interpret outputs such as event rules, partner
-interfaces, config keys, benefit/cashback identifiers, or error mappings.
+service calls and shared/transitive tables needed to interpret outputs such as event rules, peer
+interfaces, config keys, reward/promotion identifiers, or error mappings.
 
 For rule wrappers that target `DT/<DecisionTableName>`, prove the active rule project using the
 wrapper namespace, explicit project-name pipeline value, or project-convention routing service. If a
@@ -640,7 +640,7 @@ phase uses the approved design to implement code and tests.
 | Branch logic | Branch matrix and expected outcomes | Conditionals and branch tests |
 | Dependency behavior register | Target replacement and failure mapping for each dependency | DAL/downstream/rule clients |
 | Functional config and reference data | Target source for behavior-affecting config, secret handling, env/tenant/market variance, defaults/fallbacks, and failure behavior | Spring configuration properties, secret references, DAL/reference-data calls, or approved static values plus tests |
-| Side effects and transaction boundaries | Write/read boundary, logging, rollback/partial failure behavior | Transaction and side-effect handling |
+| Side effects and atomic write boundaries | Write/read boundary, logging, rollback/partial failure behavior | Atomic write and side-effect handling |
 | Data operations | Target data-layer endpoints and parameters | DAL client methods |
 | Rules and conversion fidelity | Audited rule implementations/model classes, market isolation, and conversion-remediation work packages | Rule wiring and rules parity tests only for audited assets |
 | Error codes/messages | Complete direct, propagated, shared/common, unused, and unknown-reachability error inventory; public error body/status mapping | Exception mapper / response builder plus tests for direct and propagated/shared mappings |

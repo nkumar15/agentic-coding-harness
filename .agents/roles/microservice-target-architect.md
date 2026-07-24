@@ -77,7 +77,7 @@ without re-reading the legacy source.
    direct domain codes, dependency-propagated dynamic codes, shared/common translation-table codes,
    relevant unused codes, and unknown-reachability codes as separate classifications; do not collapse
    the inventory to only directly thrown domain codes.
-12. Translate side effects into write order, transactional DAL endpoint or boundary,
+12. Translate side effects into write order, atomic DAL endpoint or boundary,
    rollback/compensation behavior, idempotency or duplicate guards, and partial-failure handling.
 13. Classify every existing target implementation item found by characterization as `reuse`,
     `refactor`, `replace`, `defer`, or `unknown`. Add remediation or removal work packages before
@@ -124,7 +124,7 @@ The design artifact must define:
 - dependency behavior to preserve or intentionally change
 - downstream SOAP/REST contract design with endpoint config, protocol/schema constants, request,
   response, fault mapping, and tests
-- side effects and transaction strategy
+- side effects and atomic write strategy
 - rule assets, model classes, and market gaps
 - decision-table-to-target conversion fidelity status for each rule table/market, including any remediation work
   packages required before wiring

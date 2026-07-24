@@ -77,7 +77,7 @@ public ResponseEntity<?> queryWidget(
   behavioral parity is won.
 - Pass tenant id and correlation id through to downstream calls for routing + tracing.
 - Implement behavior-affecting config/reference-data decisions exactly as approved by migration
-  design. If a branch, downstream URL, rule input, error mapping, threshold, or market/partner
+  design. If a branch, downstream URL, rule input, error mapping, threshold, or market/peer
   mapping comes from config, keep that dependency visible in the service/config layer and cover it
   with tests.
 
@@ -87,8 +87,8 @@ public ResponseEntity<?> queryWidget(
 - Propagate correlation and tenant headers on every call.
 - Let `RestClientException` propagate to the service/controller (mapped to 4xx/5xx there).
 - Do field renames/reshaping in the **service layer**, not the client — keep renames visible/testable.
-- For multi-step writes, use the downstream's transactional endpoints rather than emulating a
-  transaction with several calls.
+- For multi-step writes, use the downstream's atomic endpoints rather than emulating an
+  atomic write with several calls.
 
 ```java
 public WidgetResponse getWidget(String id, String tenantId, String requestId) {

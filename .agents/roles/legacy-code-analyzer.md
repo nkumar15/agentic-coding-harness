@@ -61,7 +61,7 @@ source, and your role is to reveal them without inventing behavior.
    evidence, consumers, env/tenant/market/service variance, defaults/fallbacks, and target migration
    action. Use project conventions to decide when deployment-mounted config is valid evidence, and
    omit secret values from artifacts.
-10. Record side effects and transaction boundaries for write or state-changing operations.
+10. Record side effects and atomic write boundaries for write or state-changing operations.
 11. Extract a complete error-code inventory, not just directly thrown codes. Include domain-direct
     codes from branches/catch paths, dependency-propagated dynamic codes, invoked shared/common
     error translation table codes, relevant domain-service codes that are not reachable from the
@@ -151,7 +151,7 @@ The report must include:
 - downstream contract evidence for every SOAP/REST peer dependency
 - functional config/reference-data usage, source evidence, consumers, variance, fallback behavior,
   and recommended target migration action
-- side effects and transaction boundaries
+- side effects and atomic write boundaries
 - data operations
 - rules
 - error codes/messages, including direct domain codes, dependency-propagated codes, invoked

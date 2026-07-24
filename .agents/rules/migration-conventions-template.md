@@ -205,7 +205,7 @@ Decision-table classification (use in characterization reports):
   port `<FILL_IN: e.g. 8003>`. Inventory in `<FILL_IN: DAL mapping artifact path>`.
 - Base URL via `<FILL_IN: env var, e.g. MYAPP_DAL_BASE_URL>`. Other downstream URLs:
   `<FILL_IN: list other env vars, e.g. POLICY_MANAGER_URL, POINTS_MANAGER_URL>` — never hardcode hosts.
-- Multi-step ops use `<FILL_IN: transactional endpoint convention, e.g. t-post-* / t-delete-* endpoints>`.
+- Multi-step ops use `<FILL_IN: atomic endpoint convention, e.g. t-post-* / t-delete-* endpoints>`.
 
 ## Parity & Verification
 
@@ -308,6 +308,6 @@ Branch prefixes (extends `scm-conventions.md`):
 `migrate/deploy-<issue>-<name>` (deploy and manual test).
 
 `<name>` is the kebab-case slug for your migration unit
-(`<FILL_IN: list your migration unit names, e.g. partner, transaction, benefit, eligibility>`).
+(`<FILL_IN: list your migration unit names, e.g. peer, ledger, reward, pricing>`).
 
 Commit types: `feat`/`fix`/`test`/`docs`/`refactor`/`chore`.
