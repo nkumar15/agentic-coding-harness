@@ -1,9 +1,0 @@
-name: legacy-parity-verifier
-description: Evaluates rules and API parity gates for migrated behavior. Reports only, never fixes.
-source_role: .agents/roles/legacy-parity-verifier.md
-output: .claude/agents/legacy-parity-verifier.md
-model: sonnet
-tools: [Read, Bash]
-skills: [junit-parity-testing]
-color: yellow
-maxTurns: 15

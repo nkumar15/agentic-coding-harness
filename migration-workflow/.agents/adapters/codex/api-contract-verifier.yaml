@@ -1,7 +1,0 @@
-name: api-contract-verifier
-source_role: .agents/roles/api-contract-verifier.md
-output: .codex/agents/api-contract-verifier.toml
-model: gpt-5-codex
-reasoning_effort: medium
-tools: [read, exec]
-fallback: inline

@@ -1,8 +1,0 @@
-name: springboot-migration-reviewer
-source_role: .agents/roles/springboot-migration-reviewer.md
-output: .codex/agents/springboot-migration-reviewer.toml
-model: gpt-5-codex
-reasoning_effort: high
-tools: [read, search, exec]
-skills: [java-springboot, junit-parity-testing]
-fallback: inline

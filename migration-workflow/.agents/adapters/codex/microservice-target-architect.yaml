@@ -1,8 +1,0 @@
-name: microservice-target-architect
-source_role: .agents/roles/microservice-target-architect.md
-output: .codex/agents/microservice-target-architect.toml
-model: gpt-5-codex
-reasoning_effort: high
-tools: [read, search, write, exec]
-skills: [migration-design, java-springboot, junit-parity-testing]
-fallback: inline
