@@ -3,25 +3,25 @@ name: Agent portability
 on:
   pull_request:
     paths:
-      - "AGENTS.md"
-      - "CLAUDE.md"
-      - ".agents/**"
-      - ".claude/**"
-      - ".codex/**"
-      - "scripts/generate-agent-adapters.py"
-      - "scripts/validate-agent-portability.py"
+      - "package/AGENTS.md"
+      - "package/CLAUDE.md"
+      - "package/.agents/**"
+      - "package/.claude/**"
+      - "package/.codex/**"
+      - "package/scripts/generate-agent-adapters.py"
+      - "package/scripts/validate-agent-portability.py"
       - ".github/workflows/agent-portability.yml"
   push:
     branches:
       - main
     paths:
-      - "AGENTS.md"
-      - "CLAUDE.md"
-      - ".agents/**"
-      - ".claude/**"
-      - ".codex/**"
-      - "scripts/generate-agent-adapters.py"
-      - "scripts/validate-agent-portability.py"
+      - "package/AGENTS.md"
+      - "package/CLAUDE.md"
+      - "package/.agents/**"
+      - "package/.claude/**"
+      - "package/.codex/**"
+      - "package/scripts/generate-agent-adapters.py"
+      - "package/scripts/validate-agent-portability.py"
       - ".github/workflows/agent-portability.yml"
 
 jobs:
@@ -38,10 +38,10 @@ jobs:
           python-version: "3.11"
 
       - name: Generate adapters
-        run: python3 scripts/generate-agent-adapters.py
+        run: python3 package/scripts/generate-agent-adapters.py
 
       - name: Validate portability
-        run: python3 scripts/validate-agent-portability.py
+        run: python3 package/scripts/validate-agent-portability.py
 
       - name: Ensure generated adapters are committed
         run: git diff --exit-code

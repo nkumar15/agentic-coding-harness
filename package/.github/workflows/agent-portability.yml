@@ -1,0 +1,47 @@
+name: Agent portability
+
+on:
+  pull_request:
+    paths:
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - ".agents/**"
+      - ".claude/**"
+      - ".codex/**"
+      - "scripts/generate-agent-adapters.py"
+      - "scripts/validate-agent-portability.py"
+      - ".github/workflows/agent-portability.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - ".agents/**"
+      - ".claude/**"
+      - ".codex/**"
+      - "scripts/generate-agent-adapters.py"
+      - "scripts/validate-agent-portability.py"
+      - ".github/workflows/agent-portability.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate adapters
+        run: python3 scripts/generate-agent-adapters.py
+
+      - name: Validate portability
+        run: python3 scripts/validate-agent-portability.py
+
+      - name: Ensure generated adapters are committed
+        run: git diff --exit-code

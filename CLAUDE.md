@@ -1,32 +1,25 @@
 # Claude Code Instructions
 
-Claude Code entrypoint for this portable agentic coding harness. The canonical workflow source is
-under `.agents/`, and generated Claude-compatible output is committed under `.claude/`.
+This repo is the source of the Portable Agentic Coding Harness package. The distributable package
+lives entirely under `package/` — that is exactly what `scripts/install.sh`/`install.ps1` copy into a
+consumer repository's root. Nothing outside `package/` is ever shipped.
 
 ## Required Reads
 
-- Before changing this workflow package, read `.claude/rules/project-conventions.md`.
-- Before branch, commit, or change-request work, read `.claude/rules/scm-conventions.md`.
-- For agent behavior, read `.claude/rules/llm-behavior.md`.
-- For shell command discipline, read `.claude/rules/command-execution.md`.
-- For tracked work, use `.claude/skills/orchestrate/SKILL.md`.
-- Resolve phases and gates from `.claude/process/`.
-- Launch named Claude agents from `.claude/agents/` through Claude Code's host mechanism.
+- Before changing anything under `package/`, read `package/.agents/rules/scm-conventions.md` and
+  `package/.agents/rules/llm-behavior.md`.
+- For this repo's own project facts (source root, verification commands, process provider), read
+  `MAINTAINER-CONVENTIONS.md` — not `package/.agents/rules/project-conventions.md`, which must stay a
+  generic placeholder because it ships to every consumer.
+- For shell command discipline, read `package/.agents/rules/command-execution.md`.
+- For tracked maintenance work on this repo, use `package/.agents/skills/orchestrate/SKILL.md`.
 
-## Workflows
+## Maintenance Rules
 
-Supported process specs:
-
-- `feature`: PRD -> architecture -> development.
-- `bug`: reproduce -> fix -> test.
-- `chore`: describe -> implement.
-- `docs`: write -> review.
-
-## Canonical Source
-
-- Humans edit `.agents/` first.
-- `.claude/` is generated Claude adapter output plus Claude-local settings/memory if a consuming
-  repo chooses to add those.
-- `.codex/agents/` is generated Codex adapter output.
-- Do not move shared project conventions into `.codex/rules/`; Codex reads canonical rules from
-  `.agents/rules/`.
+- Edit `package/.agents/` first.
+- Regenerate host adapters with `python3 package/scripts/generate-agent-adapters.py`.
+- Validate with `python3 package/scripts/validate-agent-portability.py` before committing.
+- Never hand-edit `package/.claude/` or `package/.codex/agents/` directly; they are generated.
+- Do not add this repo's own facts to `package/.agents/rules/project-conventions.md` or
+  `package/.agents/rules/project-conventions-template.md` — those files ship as-is to every consumer
+  and must stay generic.
