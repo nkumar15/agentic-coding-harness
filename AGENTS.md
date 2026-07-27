@@ -1,6 +1,6 @@
 # Repository Instructions
 
-Codex entrypoint for this reusable agentic workflow package. The canonical workflow source lives
+Codex entrypoint for this portable agentic coding harness. The canonical workflow source lives
 under `.agents/`.
 
 ## Required Reads

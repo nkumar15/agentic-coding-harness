@@ -1,6 +1,6 @@
 # BMAD Comparison
 
-This note explains how this reusable agentic coding workflow differs from the BMAD Method and how
+This note explains how this portable agentic coding harness differs from the BMAD Method and how
 to position both clearly with development teams.
 
 ## Short Positioning
@@ -16,7 +16,7 @@ auditable workflow layer that fits into an existing repository and engineering g
 
 ## Comparison
 
-| Area | BMAD Method | Reusable Agentic Coding Workflow |
+| Area | BMAD Method | Portable Agentic Coding Harness |
 |---|---|---|
 | Primary intent | Broad AI-driven agile development framework from ideation and planning through implementation. | Lightweight, repo-native workflow for consistent AI assistance in existing engineering repositories. |
 | Adoption model | Install a framework/ecosystem, commonly through `npx bmad-method install`. | Copy the workflow package, fill convention files, regenerate `.claude/` and `.codex/agents/`, then validate. |
@@ -32,7 +32,7 @@ auditable workflow layer that fits into an existing repository and engineering g
 
 Use this framing:
 
-> BMAD is a comprehensive AI-native agile framework. Our reusable agentic coding workflow is a
+> BMAD is a comprehensive AI-native agile framework. Our portable agentic coding harness is a
 > lighter repo-native package designed to fit into existing engineering teams. It standardizes how
 > Codex and Claude assist with implementation, verification, and review work while keeping project
 > conventions and human approval gates central.
