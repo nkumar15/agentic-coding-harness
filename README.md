@@ -1,8 +1,8 @@
-# Reusable Agentic Coding Workflow
+# Portable Agentic Coding Harness
 
 ## Introduction
 
-Reusable Agentic Coding Workflow is a lightweight agentic coding workflow for repositories that want
+Portable Agentic Coding Harness is a lightweight agentic coding workflow for repositories that want
 repeatable coding lifecycles without locking the project to one LLM host. It gives teams a small,
 portable structure for phases, gates, roles, reusable skills, and project conventions, then exposes
 that same structure to both Codex and Claude Code.

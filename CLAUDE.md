@@ -1,6 +1,6 @@
 # Claude Code Instructions
 
-Claude Code entrypoint for this reusable agentic workflow package. The canonical workflow source is
+Claude Code entrypoint for this portable agentic coding harness. The canonical workflow source is
 under `.agents/`, and generated Claude-compatible output is committed under `.claude/`.
 
 ## Required Reads
