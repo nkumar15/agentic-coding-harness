@@ -20,23 +20,25 @@ Edit .agents/ -> generate .claude/ and .codex/agents/ -> validate
 - If you are evaluating this for a team, read `Introduction`, `Workflow Overview`,
   `Supported Workflows`, and `What This Repo Is Not`.
 - If you are onboarding a Python/FastAPI repository today, follow the
-  [Python/FastAPI onboarding example](docs/agentic-workflow/onboarding/python-fastapi.md).
+  [Python/FastAPI onboarding example](package/docs/agentic-workflow/onboarding/python-fastapi.md).
 - If you are onboarding another stack, start from
-  `.agents/rules/project-conventions-template.md`, then use the workflow docs to decide which
+  `package/.agents/rules/project-conventions-template.md`, then use the workflow docs to decide which
   skills and gates apply.
 - If you are running actual work, choose the matching workflow process file and use the role named
   by that phase or gate.
-- If you are maintaining this package, edit `.agents/` first, regenerate adapters, and run the
-  portability validator.
+- If you are maintaining this package, see `CLAUDE.md`/`AGENTS.md` and `MAINTAINER-CONVENTIONS.md` at
+  this repo's root.
 
 ## How To Use This
 
-1. Copy this package into the target repository.
+1. Copy the contents of this repo's `package/` directory into the target repository's root (a
+   scripted curl/PowerShell installer is planned — see the
+   [installation-process PRD](package/docs/agentic-workflow/prd/002-installation-process.md)).
 2. Fill `.agents/rules/project-conventions.md` from
    `.agents/rules/project-conventions-template.md`. For a Python stack, follow the
-   [Python/FastAPI onboarding example](docs/agentic-workflow/onboarding/python-fastapi.md).
+   [Python/FastAPI onboarding example](package/docs/agentic-workflow/onboarding/python-fastapi.md).
 3. Replace placeholder gate commands in `.agents/process/gates.yaml` with commands backed by the
-   convention files. See the [gate command example](docs/agentic-workflow/README.md#gate-command-example).
+   convention files. See the [gate command example](package/docs/agentic-workflow/README.md#gate-command-example).
 5. Choose the process provider in `.agents/process/config.yaml`, usually `local` first and `github`
    when tracker/change-request automation is ready.
 6. Regenerate host adapters:
@@ -99,10 +101,10 @@ flowchart TD
 
 | Workflow | Use when | Process file | Shape | Detailed docs |
 |---|---|---|---|---|
-| Feature | New behavior needs requirements and architecture before coding. | `.agents/process/feature.yaml` | PRD -> architecture -> development -> gates | [Feature workflow](docs/agentic-workflow/feature/README.md) |
-| Bug | Existing behavior is wrong and needs a scoped fix plus regression evidence. | `.agents/process/bug.yaml` | reproduce -> fix -> test -> gates | [Bug workflow](docs/agentic-workflow/bug/README.md) |
-| Chore | Maintenance work does not need product requirements or architecture. | `.agents/process/chore.yaml` | scoped maintenance -> gates | [Chore workflow](docs/agentic-workflow/chore/README.md) |
-| Docs | The change is documentation-only. | `.agents/process/docs.yaml` | documentation change -> review -> merge | [Docs workflow](docs/agentic-workflow/docs/README.md) |
+| Feature | New behavior needs requirements and architecture before coding. | `.agents/process/feature.yaml` | PRD -> architecture -> development -> gates | [Feature workflow](package/docs/agentic-workflow/feature/README.md) |
+| Bug | Existing behavior is wrong and needs a scoped fix plus regression evidence. | `.agents/process/bug.yaml` | reproduce -> fix -> test -> gates | [Bug workflow](package/docs/agentic-workflow/bug/README.md) |
+| Chore | Maintenance work does not need product requirements or architecture. | `.agents/process/chore.yaml` | scoped maintenance -> gates | [Chore workflow](package/docs/agentic-workflow/chore/README.md) |
+| Docs | The change is documentation-only. | `.agents/process/docs.yaml` | documentation change -> review -> merge | [Docs workflow](package/docs/agentic-workflow/docs/README.md) |
 
 All workflows are declarative. Process files name phases, roles, branches, artifacts, and gates.
 Gate definitions live in `.agents/process/gates.yaml`.
@@ -115,13 +117,13 @@ done criteria.
 
 | Stack | Guide | Covers |
 |---|---|---|
-| Python/FastAPI | [Python/FastAPI onboarding](docs/agentic-workflow/onboarding/python-fastapi.md) | Filling project conventions, selecting `python-fastapi` and `pytest`, replacing gate commands, validating adapters, and starting feature/bug/chore/docs workflows. |
+| Python/FastAPI | [Python/FastAPI onboarding](package/docs/agentic-workflow/onboarding/python-fastapi.md) | Filling project conventions, selecting `python-fastapi` and `pytest`, replacing gate commands, validating adapters, and starting feature/bug/chore/docs workflows. |
 
 ## Related Comparisons
 
 | Topic | Guide |
 |---|---|
-| BMAD Method comparison | [How this differs from BMAD](docs/agentic-workflow/bmad-comparison.md) |
+| BMAD Method comparison | [How this differs from BMAD](package/docs/agentic-workflow/bmad-comparison.md) |
 
 ## Supported Skills
 
@@ -191,6 +193,10 @@ flowchart LR
 
 ## Directory Layout
 
+Paths below are relative to the installed package root. In this source repo, that root is
+`package/`; once installed into a consuming repository, `package/`'s contents become that
+repository's own root.
+
 | Path | Purpose |
 |---|---|
 | `.agents/rules/` | Canonical behavior, SCM, command, project, and verification rules. |
@@ -204,18 +210,26 @@ flowchart LR
 | `docs/agentic-workflow/` | Workflow design, rationale, and adoption documentation. |
 | `scripts/` | Adapter generator and portability validator. |
 
+This source repo additionally has, at its own root (not part of the installed package):
+`package/` (the directory holding everything above), `CLAUDE.md`/`AGENTS.md` (this repo's own
+maintainer entrypoints), and `MAINTAINER-CONVENTIONS.md` (this repo's filled project facts).
+
 ## Maintenance Rules
 
-- Edit `.agents/` first.
-- Do not hand-edit generated `.claude/` or `.codex/agents/` files.
+Maintaining this package (the source repo itself) is a different concern from adopting it; see
+`CLAUDE.md`, `AGENTS.md`, and `MAINTAINER-CONVENTIONS.md` at this repo's root for the full picture.
+In short:
+
+- Edit `package/.agents/` first.
+- Do not hand-edit generated `package/.claude/` or `package/.codex/agents/` files.
 - Keep roles and skills generic. They should refer to convention sections for project facts.
 - Keep generated files committed so a fresh clone works for both host tools.
 - After workflow-source or adapter changes, run:
 
   ```bash
-  python3 scripts/generate-agent-adapters.py
-  python3 scripts/validate-agent-portability.py
+  python3 package/scripts/generate-agent-adapters.py
+  python3 package/scripts/validate-agent-portability.py
   ```
 
 The GitHub Actions workflow at `.github/workflows/agent-portability.yml` runs the same portability
-checks.
+checks against `package/`.

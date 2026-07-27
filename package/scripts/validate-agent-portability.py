@@ -20,7 +20,6 @@ ROLE_SKILL_PATTERN = re.compile(r"Apply the `([^`]+)` skill")
 
 
 REQUIRED_FILES = [
-    "README.md",
     "AGENTS.md",
     "CLAUDE.md",
     "docs/agentic-workflow/agent-portability.md",
