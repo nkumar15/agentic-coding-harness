@@ -46,7 +46,7 @@ work).
   repository).
 - A package-manager-grade dependency/version resolver.
 - A GUI installer.
-- CI coverage of the Windows path in this iteration (see Open Questions).
+- Automated CI coverage of the Windows path in this iteration (see `Decisions`).
 
 ## Repository Structure
 
@@ -129,29 +129,42 @@ there is no duplicate copy to keep in sync.
    writes the answers into `project-conventions.md` and `config.yaml`.
 7. After copying or updating, the installer runs `scripts/generate-agent-adapters.py` and
    `scripts/validate-agent-portability.py` and reports failures clearly before exiting.
-8. A documented, separate add-on install command layers an optional add-on package (starting with
-   `migration-workflow`) onto a repo that already has the base package installed.
+8. The base installer accepts an `--addon <name>` flag (e.g. `--addon migration-workflow`) that
+   downloads the named add-on's own versioned release and layers it into a repo that already has the
+   base package installed.
 9. Root `README.md#how-to-use-this` is rewritten to lead with the new install commands instead of
    "Copy this package into the target repository."
 10. This repo's own `.agents/`, `.claude/`, `.codex/agents/`, `AGENTS.md`, `CLAUDE.md`, `docs/`, and
-    `scripts/` (except `install.sh`/`install.ps1`) move under `package/`, unchanged in content; this
-    repo's root gains its own `CLAUDE.md`, `AGENTS.md`, and `MAINTAINER-CONVENTIONS.md` for
-    maintaining this package, per `Repository Structure`.
+    `scripts/` (except `install.sh`/`install.ps1`/`install.bat`) move under `package/`, unchanged in
+    content; this repo's root gains its own `CLAUDE.md`, `AGENTS.md`, and `MAINTAINER-CONVENTIONS.md`
+    for maintaining this package, per `Repository Structure`.
+11. `install.sh` (POSIX shell) and `install.ps1` (PowerShell) are small bootstrap launchers only: they
+    resolve the target release version, download its release tarball, and extract `package/` into the
+    target repo. The interactive configuration step (prompts, writing `project-conventions.md` and
+    `config.yaml`) runs as a Python script bundled inside the downloaded package
+    (`package/scripts/configure.py`), not as shell-native prompts.
+12. `install.bat` is a thin wrapper for classic `cmd.exe` users: it shells out to
+    `powershell -NoProfile -Command` to run the same `install.ps1` logic, so `cmd.exe` users get the
+    identical installer without needing to open PowerShell themselves.
 
 ## Technical Considerations
 
-- The `curl`/PowerShell one-liners should point at a stable reference (e.g. `main` or a tagged
-  release), not an unpinned moving target, so re-runs are reproducible.
+- The `curl`/PowerShell one-liners point at a specific tagged GitHub Release, never an unpinned raw
+  file on `main`, so a given install command is fully reproducible regardless of when it is run.
 - The POSIX installer should be plain `sh` (not bash-only) for portability; the Windows installer
   should run on stock PowerShell without extra modules.
 - Copy/update logic must be idempotent and safe by default: never destroy an adopter's existing
   customizations without an explicit confirmation or a `--force`-style flag.
-- Exact fetch mechanism (self-contained script vs. script-that-clones) and hosting location are open
-  — see Open Questions.
+- `install.sh`/`install.ps1` are deliberately minimal (download + extract only) so they are easy to
+  read and audit before anyone pipes them into `sh`/`iex`; all interactive and update-diff logic lives
+  in `package/scripts/configure.py`, which runs only after the payload is already on disk.
 - Moving `generate-agent-adapters.py` and `validate-agent-portability.py` under `package/scripts/`
   means their internal path resolution must be relative to the script's own location (or an explicit
   package root), not the caller's working directory, so they behave identically whether run from this
   repo's root or from a freshly installed consumer repo's root.
+- Python 3 becomes an explicit installer prerequisite (it already is one for
+  `generate-agent-adapters.py`/`validate-agent-portability.py`), so `install.sh`/`install.ps1` should
+  check for it and fail with a clear message rather than a stack trace if it's missing.
 
 ## Verification Requirements
 
@@ -161,6 +174,8 @@ there is no duplicate copy to keep in sync.
     `docs/agentic-workflow/` tree at the target repo's root, and `scripts/validate-agent-portability.py`
     passes when run from that tree.
   - Running the Windows command against a clean, empty git repo produces the same result.
+  - Running `install.bat` from `cmd.exe` produces the same result as running `install.ps1` directly
+    from PowerShell.
   - Re-running either installer against a repo with an already-filled `project-conventions.md` and a
     customized `gates.yaml` leaves both files unchanged and reports what it skipped.
   - The interactive prompts, when answered, produce a `project-conventions.md` with no remaining
@@ -175,17 +190,18 @@ there is no duplicate copy to keep in sync.
   exit code 0 and expected files present, then run `python3 scripts/validate-agent-portability.py`.
 - Test data/fixtures: a scratch empty-repo fixture (fresh install path) and a scratch repo fixture
   pre-seeded with a filled `project-conventions.md` and edited `gates.yaml` (update path).
-- Explicit non-goals: no installer performance benchmarking; no Windows CI job in this iteration
-  (tracked as an open question below, not assumed done).
+- Explicit non-goals: no installer performance benchmarking; no automated Windows CI job in this
+  iteration (the `cmd.exe`/PowerShell smoke check above is manual for now).
 
-## Open Questions
+## Decisions
 
-1. Where is the installer script hosted for `curl`/`irm` to fetch — a raw file on `main`, or a
-   versioned GitHub Release asset? This affects update/reproducibility semantics.
-2. Should the installer be a single self-contained script, or a small bootstrap script that then
-   clones/downloads the rest of the package?
-3. Should Windows support be PowerShell-only, or also ship a `.cmd`/`.bat` wrapper for `cmd.exe`
-   users who won't run `irm`?
-4. How does the add-on install mechanism locate an add-on like `migration-workflow` once it lives in
-   its own separate repository — a second `curl`/`irm` command pointed at that repo, or a flag on the
-   base installer?
+1. **Hosting**: the installer commands fetch a versioned GitHub Release asset, not an unpinned raw
+   file on `main`. Every install is reproducible against the version it was run with.
+2. **Installer shape**: `install.sh`/`install.ps1` are small bootstrap launchers (resolve version,
+   download release tarball, extract `package/`); all interactive configuration and update-diff logic
+   runs afterward as `package/scripts/configure.py`, not as shell-native prompt code.
+3. **Windows support**: both PowerShell (`install.ps1`) and classic `cmd.exe` (`install.bat`, which
+   shells out to the PowerShell logic) are supported.
+4. **Add-on installation**: the base installer takes a `--addon <name>` flag that downloads and layers
+   an add-on's own versioned release (starting with `migration-workflow`) onto an already-installed
+   base package.
