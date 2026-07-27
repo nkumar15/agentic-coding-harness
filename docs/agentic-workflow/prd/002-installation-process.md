@@ -17,6 +17,14 @@ macOS/Linux) and an equivalent one-line Windows command (PowerShell), both invok
 copies the package into the target repository and interactively prompts for initial configuration
 instead of leaving `project-conventions.md` fully manual.
 
+Shipping a scripted installer also forces a repository-structure decision: this repo's own root
+currently doubles as both the live Claude/Codex entrypoint for maintaining this package (`CLAUDE.md`,
+`AGENTS.md`) and the literal files an installer would copy into a consumer's repo root. This PRD
+includes restructuring this repo so the installable payload is a single, self-contained directory
+(`package/`) that the installer copies wholesale, separate from this repo's own maintainer-only
+entrypoints and conventions (see `Repository Structure` and issue #5's `MAINTAINER-CONVENTIONS.md`
+work).
+
 ## Goals
 
 - Replace "copy this package into the target repository" with a single documented command per
@@ -28,6 +36,8 @@ instead of leaving `project-conventions.md` fully manual.
   without clobbering a filled-in `project-conventions.md` or customized `gates.yaml` commands.
 - Provide a mechanism for installing an optional add-on package (e.g. `migration-workflow`) on top of
   an already-installed base package.
+- Separate this repo's own maintainer/dogfood entrypoints and conventions from the directory the
+  installer copies, so the two never get mixed up.
 
 ## Non-Goals
 
@@ -37,6 +47,42 @@ instead of leaving `project-conventions.md` fully manual.
 - A package-manager-grade dependency/version resolver.
 - A GUI installer.
 - CI coverage of the Windows path in this iteration (see Open Questions).
+
+## Repository Structure
+
+The installable payload moves into a single top-level `package/` directory in this repo, mirroring
+exactly what the installer copies into a consumer's repo root. This repo's own dogfood entrypoints
+stay at this repo's root and are never copied:
+
+```
+agentic-coding-harness/                        # this repo — maintainer/dogfood context, never shipped
+├── CLAUDE.md                                   # this repo's own entrypoint — points into package/
+├── AGENTS.md                                   # same, for Codex
+├── MAINTAINER-CONVENTIONS.md                   # this repo's own filled project facts (issue #5)
+├── README.md                                   # about this project + curl/PowerShell install instructions
+├── .gitignore                                  # ignores .claude/settings.local.json, config.local.yaml
+├── .github/workflows/agent-portability.yml     # this repo's own CI — validates package/
+├── scripts/
+│   ├── install.sh                              # curl | sh entrypoint — copies package/ into target repo
+│   └── install.ps1                             # irm | iex entrypoint — Windows equivalent
+└── package/                                    # the install payload, copied verbatim into consumers
+    ├── .agents/                                # canonical workflow source (unchanged content)
+    ├── .claude/                                # generated Claude adapter output (unchanged content)
+    ├── .codex/agents/                          # generated Codex adapter output (unchanged content)
+    ├── AGENTS.md                               # shipped Codex entrypoint
+    ├── CLAUDE.md                                # shipped Claude entrypoint
+    ├── docs/agentic-workflow/                  # shipped workflow docs
+    ├── scripts/
+    │   ├── generate-agent-adapters.py          # consumers run this after editing their own .agents/
+    │   └── validate-agent-portability.py       # consumers run this to validate their own copy
+    └── .github/workflows/agent-portability.yml # CI template installed into the target's workflows
+```
+
+This resolves the mixing the installer would otherwise cause: `scripts/install.sh`/`install.ps1`
+have exactly one job (copy `package/*` into the target repo's root and run the config prompts); this
+repo's maintenance tooling (`package/scripts/generate-agent-adapters.py`,
+`package/scripts/validate-agent-portability.py`) is the same tool a consumer runs post-install, so
+there is no duplicate copy to keep in sync.
 
 ## Users
 
@@ -70,8 +116,8 @@ instead of leaving `project-conventions.md` fully manual.
    package into the current repository.
 2. A published one-line command for Windows (PowerShell, e.g. `irm <install-url> | iex`) does the
    same.
-3. The installer copies exactly the shipped path set: `.agents/`, `.claude/`, `.codex/agents/`,
-   `AGENTS.md`, `CLAUDE.md`, `scripts/`, `docs/agentic-workflow/`.
+3. The installer copies the contents of this repo's `package/` directory verbatim into the target
+   repository's root (see `Repository Structure`), rather than enumerating separate top-level paths.
 4. The installer detects an existing install (e.g. `.agents/` already present) and switches to update
    mode instead of blind overwrite.
 5. In update mode, the installer never silently overwrites an already-filled
@@ -87,6 +133,10 @@ instead of leaving `project-conventions.md` fully manual.
    `migration-workflow`) onto a repo that already has the base package installed.
 9. Root `README.md#how-to-use-this` is rewritten to lead with the new install commands instead of
    "Copy this package into the target repository."
+10. This repo's own `.agents/`, `.claude/`, `.codex/agents/`, `AGENTS.md`, `CLAUDE.md`, `docs/`, and
+    `scripts/` (except `install.sh`/`install.ps1`) move under `package/`, unchanged in content; this
+    repo's root gains its own `CLAUDE.md`, `AGENTS.md`, and `MAINTAINER-CONVENTIONS.md` for
+    maintaining this package, per `Repository Structure`.
 
 ## Technical Considerations
 
@@ -98,18 +148,26 @@ instead of leaving `project-conventions.md` fully manual.
   customizations without an explicit confirmation or a `--force`-style flag.
 - Exact fetch mechanism (self-contained script vs. script-that-clones) and hosting location are open
   — see Open Questions.
+- Moving `generate-agent-adapters.py` and `validate-agent-portability.py` under `package/scripts/`
+  means their internal path resolution must be relative to the script's own location (or an explicit
+  package root), not the caller's working directory, so they behave identically whether run from this
+  repo's root or from a freshly installed consumer repo's root.
 
 ## Verification Requirements
 
 - User-visible acceptance checks:
   - Running the macOS/Linux command against a clean, empty git repo produces a working
     `.agents/`, `.claude/`, `.codex/agents/`, `AGENTS.md`, `CLAUDE.md`, `scripts/`, and
-    `docs/agentic-workflow/` tree, and `scripts/validate-agent-portability.py` passes.
+    `docs/agentic-workflow/` tree at the target repo's root, and `scripts/validate-agent-portability.py`
+    passes when run from that tree.
   - Running the Windows command against a clean, empty git repo produces the same result.
   - Re-running either installer against a repo with an already-filled `project-conventions.md` and a
     customized `gates.yaml` leaves both files unchanged and reports what it skipped.
   - The interactive prompts, when answered, produce a `project-conventions.md` with no remaining
     `<FILL_IN>` placeholders for the fields asked.
+  - This repo's own `package/scripts/generate-agent-adapters.py` and
+    `package/scripts/validate-agent-portability.py` run correctly against `package/` when invoked from
+    this repo's root, proving the same scripts work unmodified once installed at a consumer's root.
 - Expected coverage: a scripted smoke test harness exercising (a) fresh install and (b) update-
   without-clobber, run against scratch temporary git repositories; a manual smoke pass on Windows
   PowerShell since Windows CI is out of scope for this iteration.
