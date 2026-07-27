@@ -31,9 +31,33 @@ Edit .agents/ -> generate .claude/ and .codex/agents/ -> validate
 
 ## How To Use This
 
-1. Copy the contents of this repo's `package/` directory into the target repository's root (a
-   scripted curl/PowerShell installer is planned — see the
-   [installation-process PRD](package/docs/agentic-workflow/prd/002-installation-process.md)).
+1. From the target repository's root, run the installer for your platform:
+
+   macOS/Linux:
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/nkumar15/agentic-coding-harness/main/scripts/install.sh | sh
+   ```
+
+   Windows (PowerShell):
+
+   ```powershell
+   irm https://raw.githubusercontent.com/nkumar15/agentic-coding-harness/main/scripts/install.ps1 | iex
+   ```
+
+   Windows (classic `cmd.exe`):
+
+   ```bat
+   curl -fsSL https://raw.githubusercontent.com/nkumar15/agentic-coding-harness/main/scripts/install.bat -o install.bat && install.bat
+   ```
+
+   The installer copies `package/`'s contents into your repo's root, prompts for initial
+   configuration, and runs the adapter generator and portability validator. Re-running it later
+   updates the generic package files without touching an already-filled
+   `project-conventions.md` or a customized `gates.yaml`. See the
+   [installation-process PRD](package/docs/agentic-workflow/prd/002-installation-process.md) for
+   the full design, and pass `--addon <name>` (or `-Addon <name>` on Windows) to layer an optional
+   add-on package such as `migration-workflow`.
 2. Fill `.agents/rules/project-conventions.md` from
    `.agents/rules/project-conventions-template.md`. For a Python stack, follow the
    [Python/FastAPI onboarding example](package/docs/agentic-workflow/onboarding/python-fastapi.md).
