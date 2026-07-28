@@ -26,6 +26,22 @@ Do not edit generated outputs directly.
 Claude-local files such as `.claude/agent-memory/`, `.claude/settings.json`, and
 `.claude/settings.local.json` are not canonical workflow source.
 
+## Importing External Skills
+
+To pull an external skill package (e.g. from `npx skills add`-compatible sources) into canonical
+source, use:
+
+```bash
+python3 scripts/add-skill.py <owner>/<repo> --skill <skill-name>
+```
+
+This wraps `npx skills add ... -a universal --copy`, which installs directly to
+`.agents/skills/<skill-name>/` — never into generated `.claude/skills/`. It only fetches skill
+content; it does not wire the skill into any role's `skills:` list. After importing, add the skill
+name to the relevant `skills:` entries in `.agents/adapters/{claude,codex}/*.yaml`, then regenerate
+and validate (below). The validator fails if an imported skill is never referenced by an adapter or
+entrypoint file.
+
 ## Regeneration
 
 Run this after changing shared workflow source or adapter metadata:
@@ -37,8 +53,8 @@ git diff --exit-code
 ```
 
 The validator checks required files, dynamic role/adapter coverage, declared skill coverage,
-generated output drift, process role references, process gate references, provider selection, and
-host-neutral canonical files.
+unreferenced (unwired) skills, generated output drift, process role references, process gate
+references, provider selection, and host-neutral canonical files.
 
 ## Host Boundaries
 
