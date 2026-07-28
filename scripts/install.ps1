@@ -95,8 +95,10 @@ try {
 
   $conventionsPath = ".agents/rules/project-conventions.md"
   $gatesPath = ".agents/process/gates.yaml"
+  $configPath = ".agents/process/config.yaml"
   $keptConventions = $false
   $keptGates = $false
+  $keptConfig = $false
 
   if ($updateMode) {
     if ((Test-Path $conventionsPath) -and -not (Select-String -Path $conventionsPath -Pattern "<FILL_IN" -Quiet)) {
@@ -114,6 +116,16 @@ try {
         $keptGates = $true
       }
     }
+    $packageConfig = Join-Path $packageDir $configPath
+    if ((Test-Path $configPath) -and (Test-Path $packageConfig)) {
+      $current = Get-Content $configPath -Raw
+      $shipped = Get-Content $packageConfig -Raw
+      if ($current -ne $shipped) {
+        New-Item -ItemType Directory -Force -Path (Join-Path $backupDir ".agents/process") | Out-Null
+        Copy-Item $configPath (Join-Path $backupDir $configPath) -Force
+        $keptConfig = $true
+      }
+    }
   }
 
   Copy-Merge $packageDir "."
@@ -125,6 +137,10 @@ try {
   if ($keptGates) {
     Copy-Item (Join-Path $backupDir $gatesPath) $gatesPath -Force
     Write-Host "kept existing $gatesPath (customized commands)"
+  }
+  if ($keptConfig) {
+    Copy-Item (Join-Path $backupDir $configPath) $configPath -Force
+    Write-Host "kept existing $configPath (customized provider)"
   }
 
   if ($Addon -or $AddonSource) {
