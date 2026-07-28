@@ -165,6 +165,27 @@ source files live under `.agents/skills/<skill>/SKILL.md`.
 | Data | `postgres-migrations` | PostgreSQL schema/data migrations. |
 | Test stacks | `pytest`, `junit` | Python tests and Java JUnit tests. |
 
+### Adding Skills
+
+To pull in a new skill from an external source (e.g. an `npx skills add`-compatible GitHub repo),
+use `package/scripts/add-skill.py` (installed as `scripts/add-skill.py` in a consuming repo):
+
+```bash
+python3 scripts/add-skill.py <owner>/<repo> --skill <skill-name>
+```
+
+This fetches the skill directly into canonical `.agents/skills/<skill-name>/` and nowhere else —
+it never writes into generated `.claude/skills/`. It does not wire the skill into any role, track
+its source for later updates, or regenerate host adapters. After it runs:
+
+1. Add `<skill-name>` to the relevant `skills:` list(s) in `.agents/adapters/{claude,codex}/*.yaml`.
+2. Run `python3 scripts/generate-agent-adapters.py` and `python3 scripts/validate-agent-portability.py`.
+   The validator fails if an imported skill is never referenced by an adapter or entrypoint file.
+
+See
+[`package/docs/agentic-workflow/agent-portability.md#importing-external-skills`](package/docs/agentic-workflow/agent-portability.md#importing-external-skills)
+for the full detail.
+
 ## Supported External Integrations
 
 | Integration | Built-in support | Where it is configured |
