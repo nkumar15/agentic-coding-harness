@@ -46,6 +46,7 @@ def main(argv: list[str]) -> int:
 
     before_claude = snapshot(ROOT / ".claude")
     before_codex = snapshot(ROOT / ".codex")
+    lock_before = LOCK_FILE.read_text(encoding="utf-8") if LOCK_FILE.is_file() else None
 
     result = subprocess.run(
         [
@@ -61,8 +62,14 @@ def main(argv: list[str]) -> int:
         print(f"npx skills add failed for {args.repo} --skill {args.skill}", file=sys.stderr)
         return result.returncode
 
-    if LOCK_FILE.is_file():
-        LOCK_FILE.unlink()
+    # skills-lock.json is the CLI's own provenance manifest; tracking it is out of scope
+    # here (see issue #12), so restore whatever was there before this run rather than
+    # discarding entries a prior, unrelated `npx skills add` run may have recorded.
+    if lock_before is None:
+        if LOCK_FILE.is_file():
+            LOCK_FILE.unlink()
+    else:
+        LOCK_FILE.write_text(lock_before, encoding="utf-8")
 
     skill_file = AGENTS / "skills" / args.skill / "SKILL.md"
     if not skill_file.is_file():
