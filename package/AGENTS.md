@@ -43,6 +43,11 @@ python3 scripts/generate-agent-adapters.py
 python3 scripts/validate-agent-portability.py
 ```
 
+To add a new skill from an external source, run `scripts/add-skill.py <owner>/<repo> --skill
+<name>` — see `docs/agentic-workflow/agent-portability.md#importing-external-skills`. It only fetches
+skill content into `.agents/skills/`; you still need to add the skill name to the relevant
+`skills:` entries in `.agents/adapters/{claude,codex}/*.yaml` and run the commands above.
+
 ## Main Branch Changes
 
 - Do not commit or push directly to `main`.

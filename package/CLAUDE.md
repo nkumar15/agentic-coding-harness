@@ -30,3 +30,17 @@ Supported process specs:
 - `.codex/agents/` is generated Codex adapter output.
 - Do not move shared project conventions into `.codex/rules/`; Codex reads canonical rules from
   `.agents/rules/`.
+
+## Maintenance
+
+After changing `.agents/` or adapter metadata, run:
+
+```bash
+python3 scripts/generate-agent-adapters.py
+python3 scripts/validate-agent-portability.py
+```
+
+To add a new skill from an external source, run `scripts/add-skill.py <owner>/<repo> --skill
+<name>` — see `docs/agentic-workflow/agent-portability.md#importing-external-skills`. It only fetches
+skill content into `.agents/skills/`; you still need to add the skill name to the relevant
+`skills:` entries in `.agents/adapters/{claude,codex}/*.yaml` and run the commands above.

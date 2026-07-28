@@ -196,6 +196,16 @@ def validate_generated_tree(source: Path, destination: Path, errors: list[str]) 
             errors.append(f"generated file is out of sync: {(destination / rel).relative_to(ROOT)}")
 
 
+def entrypoint_referenced_skills() -> set[str]:
+    referenced: set[str] = set()
+    for entrypoint in [ROOT / "AGENTS.md", ROOT / "CLAUDE.md"]:
+        if not entrypoint.is_file():
+            continue
+        text = entrypoint.read_text(encoding="utf-8")
+        referenced |= set(re.findall(r"skills/([A-Za-z0-9_-]+)/SKILL\.md", text))
+    return referenced
+
+
 def validate_roles_and_adapters(errors: list[str]) -> None:
     roles = sorted(path for path in (AGENTS / "roles").glob("*.md") if path.name != "README.md")
     if not roles:
@@ -208,6 +218,7 @@ def validate_roles_and_adapters(errors: list[str]) -> None:
         if not skill_file.is_file():
             errors.append(f"skill missing SKILL.md: {skill_file.relative_to(ROOT)}")
 
+    referenced_skills: set[str] = set()
     for role in roles:
         role_name = role.stem
         declared_skills = role_declared_skills(role)
@@ -226,6 +237,7 @@ def validate_roles_and_adapters(errors: list[str]) -> None:
             if metadata.get("source_role") != f".agents/roles/{role_name}.md":
                 errors.append(f"{metadata_path.relative_to(ROOT)} source_role mismatch")
             adapter_skills = set(metadata.get("skills", []))
+            referenced_skills |= adapter_skills
             for skill in adapter_skills:
                 if skill not in skill_names:
                     errors.append(f"{metadata_path.relative_to(ROOT)} references missing skill: {skill}")
@@ -235,6 +247,13 @@ def validate_roles_and_adapters(errors: list[str]) -> None:
                     f"{metadata_path.relative_to(ROOT)} missing role-declared skills: "
                     + ", ".join(sorted(missing))
                 )
+
+    referenced_skills |= entrypoint_referenced_skills()
+    for skill_name in sorted(skill_names - referenced_skills):
+        errors.append(
+            "skill not referenced by any adapter's skills: list or entrypoint file: "
+            f".agents/skills/{skill_name}/SKILL.md"
+        )
 
 
 def validate_generated_agents(errors: list[str]) -> None:
