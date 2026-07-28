@@ -112,6 +112,11 @@ if [ "$UPDATE_MODE" = true ]; then
     mkdir -p "$BACKUP_DIR/.agents/process"
     cp ".agents/process/gates.yaml" "$BACKUP_DIR/.agents/process/gates.yaml"
   fi
+  if [ -f ".agents/process/config.yaml" ] && [ -f "$PACKAGE_DIR/.agents/process/config.yaml" ] \
+     && ! diff -q ".agents/process/config.yaml" "$PACKAGE_DIR/.agents/process/config.yaml" >/dev/null 2>&1; then
+    mkdir -p "$BACKUP_DIR/.agents/process"
+    cp ".agents/process/config.yaml" "$BACKUP_DIR/.agents/process/config.yaml"
+  fi
 fi
 
 cp -a "$PACKAGE_DIR/." .
@@ -123,6 +128,10 @@ fi
 if [ -f "$BACKUP_DIR/.agents/process/gates.yaml" ]; then
   cp "$BACKUP_DIR/.agents/process/gates.yaml" ".agents/process/gates.yaml"
   echo "kept existing .agents/process/gates.yaml (customized commands)"
+fi
+if [ -f "$BACKUP_DIR/.agents/process/config.yaml" ]; then
+  cp "$BACKUP_DIR/.agents/process/config.yaml" ".agents/process/config.yaml"
+  echo "kept existing .agents/process/config.yaml (customized provider)"
 fi
 
 if [ -n "$ADDON" ] || [ -n "$ADDON_SOURCE" ]; then
